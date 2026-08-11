@@ -1,0 +1,51 @@
+# ---------------------------------------------------------------------------
+# Runtime dependencies — this is the file Streamlit Community Cloud installs.
+# Training-only extras live in requirements-dev.txt so they never reach deploy.
+#
+# Every version below is pinned to what is actually installed and verified
+# working locally (Python 3.11.15, macOS 26.4.1 arm64), confirmed by
+# `scripts/verify_env.py` and a full end-to-end run of the app. Unpinned deep
+# learning stacks are the single most common Streamlit Cloud build failure.
+#
+# NOTE: TensorFlow is deliberately absent. Its native extension aborts on import
+# on macOS 26 ("mutex lock failed: Invalid argument", reproduced on 2.20.0 and
+# 2.21.0), so Keras 3 runs on its PyTorch backend instead. Set
+# KERAS_BACKEND=torch before importing keras — the app does this itself.
+# ---------------------------------------------------------------------------
+
+# --- PyTorch (CPU) ---------------------------------------------------------
+# The default PyPI Linux wheel bundles CUDA and is 900 MB, which blows the
+# Streamlit Cloud image budget. The +cpu build from PyTorch's own index is a
+# fraction of that. macOS has no +cpu variant and needs the regular wheel for
+# MPS, so the platforms are pinned separately.
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.9.1+cpu ; sys_platform == "linux"
+torch==2.9.1 ; sys_platform == "darwin"
+
+# --- Model stack -----------------------------------------------------------
+keras==3.15.1
+# VideoMAE (MCG-NJU/videomae-base) is the spatiotemporal feature backbone.
+transformers==4.57.1
+tokenizers==0.22.2
+safetensors==0.8.0
+
+# --- Vision / numerics -----------------------------------------------------
+# Headless OpenCV: the regular opencv-python needs libGL.so.1, which is absent
+# from the Streamlit Cloud base image and fails at import.
+opencv-python-headless==4.12.0.88
+numpy==2.2.6
+scipy==1.17.1
+
+# REQUIRED to unpickle svd.pkl and scaler.pkl. Its absence from the original
+# requirements.txt meant inference could never have worked on a clean install.
+scikit-learn==1.7.2
+joblib==1.5.2
+
+# --- Semantic search -------------------------------------------------------
+# Static embeddings, numpy-only inference. Replaces sentence-transformers,
+# which would have pulled a second copy of the transformers/torch stack.
+model2vec==0.8.2
+
+# --- App -------------------------------------------------------------------
+streamlit==1.51.0
+pillow==12.3.0

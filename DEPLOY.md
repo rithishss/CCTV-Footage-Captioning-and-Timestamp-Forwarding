@@ -7,26 +7,14 @@ what's left needs your browser and your GitHub account.
 
 ## Before you start
 
-Nothing has been pushed. Push first:
+`main` is already pushed. The repo carries ~100 MB of video and model files;
+every individual file is under GitHub's 100 MB limit (largest is
+`Test Videos/Random_test_video1.mp4` at 62 MB), so no Git LFS is needed. You may
+see GitHub's "large file" *warning* for anything over 50 MB — a warning, not a
+rejection.
 
-```bash
-cd /Users/rithishselvam/Downloads/cv-cctv-action-timestamping
-git log --oneline origin/main..HEAD    # review what you're about to publish
-git push origin main
-```
-
-Optionally publish the experiment branch too — the README references it as
-evidence of the VideoMAE work:
-
-```bash
-git push origin feature/videomae-backbone
-```
-
-**Expect the push to take a few minutes.** The repo carries ~130 MB of video and
-model files. Every individual file is under GitHub's 100 MB limit (largest is
-`Test Videos/Random_test_video1.mp4` at 65.3 MB), so no Git LFS is needed — but
-you may see GitHub's "large file" *warning* for anything over 50 MB. A warning is
-fine; it is not a rejection.
+Dependency files live at the **repository root**: `requirements.txt` and
+`packages.txt`. Streamlit Community Cloud will not find them anywhere else.
 
 ---
 
@@ -73,6 +61,28 @@ land a correct top-1 hit.
 
 ---
 
+## If the build succeeds but the app crashes on `import cv2`
+
+**This already happened once. The cause was not OpenCV.**
+
+`requirements.txt` was at `cv-cctv-action-timestamping/requirements.txt`, but
+Streamlit Community Cloud looks for it at the **repository root**. Finding no
+dependency file, it installed nothing, the build reported success, and the app
+died on the first third-party import — which happens to be `cv2` in
+`segmentation.py`.
+
+The error type is the giveaway:
+
+| Error | Means |
+|---|---|
+| `ModuleNotFoundError: No module named 'cv2'` | the package was never installed — check where `requirements.txt` lives |
+| `ImportError: libGL.so.1: cannot open shared object file` | package installed, **system** library missing — that is what `packages.txt` is for |
+
+`requirements.txt` and `packages.txt` now both sit at the repo root.
+`cv-cctv-action-timestamping/requirements.txt` remains as a one-line
+`-r ../requirements.txt` pointer so local installs from inside the project
+directory still work.
+
 ## If the build fails
 
 Work down this list.
@@ -84,8 +94,10 @@ ignores it, replace the two torch lines with a plain `torch==2.9.1` — the buil
 gets much larger but will resolve.
 
 **`ImportError: libGL.so.1: cannot open shared object file`**
-Something pulled in `opencv-python` instead of `opencv-python-headless`. Check
-nothing added it transitively; the headless build is deliberate.
+Something pulled in `opencv-python` instead of `opencv-python-headless`, or the
+apt step didn't run. `packages.txt` at the repo root installs `libgl1` and
+`libglib2.0-0` to cover both cases. Check nothing added non-headless OpenCV
+transitively; the headless build is deliberate.
 
 **Build succeeds, app crashes with `FileNotFoundError` naming an artifact**
 One of `lstm_model.keras` / `tokenizer.json` / `scaler.pkl` / `svd.pkl` didn't

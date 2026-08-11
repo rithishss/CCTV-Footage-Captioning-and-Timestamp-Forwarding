@@ -119,12 +119,12 @@ Requires Python 3.11.
 
 ```bash
 git clone https://github.com/rithishss/CCTV-Footage-Captioning-and-Timestamp-Forwarding.git
-cd CCTV-Footage-Captioning-and-Timestamp-Forwarding/cv-cctv-action-timestamping
+cd CCTV-Footage-Captioning-and-Timestamp-Forwarding
 
 python3.11 -m venv .venv
 ./.venv/bin/python -m pip install -r requirements.txt
 
-./.venv/bin/python -m streamlit run Codebase/app.py
+./.venv/bin/python -m streamlit run cv-cctv-action-timestamping/Codebase/app.py
 ```
 
 Then open http://localhost:8501 and press **Try the sample video**. The four
@@ -143,7 +143,7 @@ Only needed if you want to retrain. Requires the
 and an Anthropic API key for the captioning step.
 
 ```bash
-./.venv/bin/python -m pip install -r requirements-dev.txt
+./.venv/bin/python -m pip install -r cv-cctv-action-timestamping/requirements-dev.txt
 
 export ANTHROPIC_API_KEY=sk-ant-...
 ./.venv/bin/python -u scripts/make_captions.py              # 780 captions, ~7 min, ~$3

@@ -4,7 +4,7 @@
 #   ./.venv/bin/python -m pip install -r requirements.txt -r requirements-dev.txt
 # ---------------------------------------------------------------------------
 
--r requirements.txt
+-r ../requirements.txt
 
 # Stage 3: vision-language captioning of sampled clip frames.
 anthropic==0.121.0

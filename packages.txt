@@ -1,0 +1,8 @@
+# apt packages installed before requirements.txt, on Streamlit Community Cloud
+# (Debian). One package per line, no versions, no comments on the same line.
+#
+# opencv-python-headless does not need libGL, but it does link against
+# libgthread from glib, and libgl1 is cheap insurance in case the resolver ever
+# lands on non-headless OpenCV.
+libgl1
+libglib2.0-0
