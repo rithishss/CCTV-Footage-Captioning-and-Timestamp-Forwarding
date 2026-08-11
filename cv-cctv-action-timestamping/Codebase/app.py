@@ -39,10 +39,22 @@ REQUIRED_ARTIFACTS = {
 MAX_UPLOAD_MB = 100
 MAX_DURATION_SECONDS = 5 * 60
 
-# Filled in from the measured demo-search results (scripts/demo_query_sweep.py).
-# A visitor's first click has to succeed, so the placeholder is a query that is
-# known to return a correct top-1 hit on the sample video.
-DEFAULT_QUERY = "someone sitting down"
+# Measured, not guessed: scripts/demo_query_sweep.py runs all 13 action
+# categories against the sample video and checks each top hit against ground
+# truth. "somebody running" is the query that lands a correct **top-1** hit, so
+# a visitor's first click succeeds. On top-3 the sweep scores 7/13, which is why
+# the results list shows five ranked candidates rather than a single answer.
+DEFAULT_QUERY = "somebody running"
+
+# Suggestions offered as one-click chips. Ordered by how well they did in the
+# sweep: correct top-1 first, then correct within top-3.
+SUGGESTED_QUERIES = [
+    "somebody running",           # top-1 hit
+    "someone throwing something", # top-3
+    "someone sitting down",       # top-3
+    "someone falls to the ground",# top-3
+    "a person grabbing something",# top-3
+]
 
 ACTION_CATEGORIES = [
     "fall", "grab", "gun", "hit", "kick", "lying_down", "run",
@@ -195,6 +207,11 @@ wrong action. Treat results as *candidate moments worth reviewing*, not answers.
 The scene descriptions (indoors/outdoors, street/shop/corridor, day/night) are
 noticeably more reliable than the action verbs.
 
+On the 49-second sample video specifically, searching all 13 actions puts the
+correct moment **first** 1 time in 13, and **somewhere in the top three** 7
+times in 13. That is why results are shown as a ranked shortlist: scanning
+three or four candidates is realistic, trusting the first one is not.
+
 **The 13 actions it was trained on**
 
 `{"` · `".join(ACTION_CATEGORIES)}`
@@ -285,9 +302,21 @@ st.divider()
 
 # ---- search ---------------------------------------------------------------
 st.subheader("Search this footage")
+
+if "query_text" not in st.session_state:
+    st.session_state.query_text = ""
+
+st.caption("Try one of these, or type your own:")
+chip_cols = st.columns(len(SUGGESTED_QUERIES))
+for col, suggestion in zip(chip_cols, SUGGESTED_QUERIES):
+    if col.button(suggestion, key=f"chip_{suggestion}", use_container_width=True):
+        st.session_state.query_text = suggestion
+        st.rerun()
+
 sc1, sc2 = st.columns([4, 1])
 with sc1:
     query = st.text_input("Describe what you're looking for",
+                          value=st.session_state.query_text,
                           placeholder=f"e.g. {DEFAULT_QUERY}",
                           label_visibility="collapsed")
 with sc2:

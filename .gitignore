@@ -29,3 +29,9 @@ lol_dataset/
 #   lstm_model.keras, tokenizer.json, scaler.pkl, svd.pkl
 # They must be committed or Streamlit Community Cloud has nothing to load.
 # Losing them is exactly what caused this rebuild.
+
+# Comparison-run artifacts: their train_report.json / eval_report.json are kept
+# as evidence, but the duplicate models are not worth ~53 MB in the repo.
+scripts/_vmae_*/lstm_model.keras
+scripts/_vmae_*/svd.pkl
+scripts/_vmae_*/scaler.pkl

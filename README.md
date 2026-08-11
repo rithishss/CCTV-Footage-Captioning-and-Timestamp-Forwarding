@@ -1,37 +1,208 @@
-# CCTV Footage Captioning and Timestamp Forwarding
+# CCTV Footage Search
 
-A CCTV footage captioning product aimed at malicious-intent action tasks, with a timestamp forwarding feature based on Semantic Search.
+Search surveillance video by **describing what you're looking for**.
 
-## Dataset
+Type *"someone falls to the ground"* and get back the moments in the footage
+where that seems to happen, ranked, each with a timestamp you can jump to. It
+matches meaning rather than keywords, so *"someone falls over"* also surfaces a
+clip captioned *"a person lies on the ground"*.
 
-Dataset Link : [CCTV Action Recognition Dataset](https://www.kaggle.com/datasets/jonathannield/cctv-action-recognition-dataset)
+**Who it's for:** anyone with hours of surveillance footage and no practical way
+to find the ninety seconds that matter. Reviewing CCTV is mostly scrubbing, and
+this narrows where to look.
 
-The CCTV Action Recognition Dataset is a collection of short video clips designed for training models to recognize human actions in surveillance footage. It consists of 13 action categories, including Fall, Gun, Hit, and Struggle, with 200 clips per category. The dataset also includes pre-generated training and testing splits and uses a structured naming convention that indicates the clip's source, original video, and action type, making it a practical resource for developing and benchmarking action recognition models. This dataset videos are named after the convention "{Name_of_source}{Name_of_video_type}{Action_Category}". Each video is nearly about 3 to 4 seconds long, just indicating the events. The videos weren't formally captioned.
+---
 
-Since the captions were not present initially, an attempt was made to caption the videos according to the scene in detail. This would help the model learn better for more details in the video. It would also help understand the specifics in the actions. For example, adding information about background details (time of the day, proximity to objects), number of people involved (the main action and the surrounding), The specifics of the action (Eg: stabbing can be done in different places. More information about the instrument used, where it affected the other person and their response to it), etc.
+## How it works
 
-## Methodology
+Three stages, in order:
 
-![Architecture Diagram](./Images/CV-Arch.png)
+**1 · Segmentation** — the video is cut into **4-second windows overlapping by
+50%**. Four seconds because that is the median length of the clips the model was
+trained on; the overlap means an action crossing a boundary is still fully
+contained in at least one window.
 
-### I. Feature Extraction and Image Enhancement
+**2 · Captioning** — each window goes through
+[VideoMAE](https://huggingface.co/MCG-NJU/videomae-base), a spatiotemporal
+encoder pretrained on Kinetics-400, producing an 8×1536 descriptor per window.
+A BiLSTM encoder with an attention decoder then writes one short sentence
+describing it. The decoder's initial state comes from the encoder, so the video
+shapes the sentence from the first word rather than only being consulted at the
+end.
 
-The dataset was first balanced by trimming videos per category, after which each frame was enhanced with ZeroDCE (Deep Curve Estimation) to improve local contrast for robust feature detection. Since simple CLAHE based image modification would struggle with varying subjects, color of clothing, etc., we resorted to a Deep Learning based approach for image enhancement. ZeroDCE (Deep Curve Estimation) takes into account multiple loss curves such as Color constancy loss, spatial consistency loss, etc. This has been adopted and integrated into the complete workflow, thus enabling better feature extraction. 
+**3 · Semantic search** — the query and every generated caption are embedded
+with [model2vec](https://github.com/MinishLab/model2vec) static embeddings and
+ranked by cosine similarity. Overlapping matches are merged so one real event
+doesn't appear three times.
 
-This was followed by spatial and temporal feature extraction. A hybrid approach captured both scene content and motion: a VGG16 CNN extracted spatial features, while a Fast Fourier Transform (FFT) on frame differences extracted temporal motion patterns. Features were fused before it was fed into the captioning module.
+---
 
-### II. Bi-LSTM + Attention Layer for Captioning
+## Results, honestly
 
-The original video features had 25,117 dimensions per timestep, which made the model computationally expensive and increased the risk of overfitting. Singular Value Decomposition (SVD) was used to reduce the features into 1500 components capturing >99.999% total variance. The features were normalized using StandardScaler, to make sure each dimension contributes equally and keep the training numerically stable.
+Measured on 156 held-out clips the model never saw during training.
 
-The encoder uses a Bidirectional LSTM with dropout to capture temporal patterns from reduced video features. The decoder embeds caption tokens, processes them with an LSTM, and applies an attention mechanism to focus on relevant video frames. The final output layer predicts the next word in the caption, achieving ~98% training accuracy and ~61% validation accuracy.
+| Metric | Value | Baseline |
+|---|---|---|
+| **Names the correct action** | **42.3%** | 7.7% (chance across 13 categories) |
+| Masked token accuracy | 76.1% | — |
+| Exact caption match | 10.3% | — |
 
-### III. Timestamp Forwarding
+**42.3% means roughly three in five captions name the wrong action.** That is
+5.5× better than guessing and genuinely useful for narrowing a search, but it is
+not a detector. Treat results as candidate moments worth reviewing.
 
-This was done using Semantic search on the generated captions and the query. The steps are as follows:
+Scene descriptions — indoors/outdoors, street/shop/corridor, day/night — are
+noticeably more reliable than the action verbs.
 
-* Done for extracting the occurrences of a phrase or a word based on its meaning. This helps find similar events that could help track down the occurrence of all possible activities.
-* The caption generated is converted to a list of caption objects, which are then grouped into three-caption-line text chunks to provide broader context for semantic analysis.
-* A pre-trained SentenceTransformer model (all-MiniLM-L6-v2) is loaded, which is capable of converting text into high-dimensional numerical vector (an embedding).
-* The cosine similarity between the query embedding and every caption_chunk embedding is calculated, resulting in a score for each chunk indicating its semantic closeness to the query. 
-* This is compared to a threshold. If it is above the threshold, it is a considered a match. For each relevant match, its start time is returned. 
+### On the bundled demo video
+
+A 49-second clip assembled from 13 source videos **the model never saw at any
+stage** (not trained on, not even captioned), with ground-truth time ranges
+recorded in `Test Videos/demo_concat_truth.json`. Searching all 13 actions:
+
+| | Rate |
+|---|---|
+| Correct moment ranked **first** | 1 / 13 |
+| Correct moment **in the top three** | 7 / 13 |
+
+That gap is why the app shows a ranked shortlist of five rather than one answer:
+scanning three or four candidates is realistic; trusting the first is not.
+Continuous footage is also harder than the held-out clips — see Limitations.
+
+### The finding that mattered most
+
+A linear probe (plain logistic regression predicting the action category
+directly from the features) turned out to be the most useful diagnostic in the
+project, because it separates *"the features don't contain the signal"* from
+*"the model isn't using the signal"*:
+
+| Features | Probe ceiling | Caption model |
+|---|---|---|
+| VGG16 frames + FFT motion bins | 30.8% | 35.9% |
+| **VideoMAE** | **47.4%** | **42.3%** |
+
+The original pipeline used VGG16 — an ImageNet **image** model applied to frames
+independently. Nothing in its 25,088 dimensions encodes motion, and the
+hand-designed FFT bins were a crude substitute. Swapping in VideoMAE, whose
+tube-masking pretraining forces genuine temporal modelling, raised the ceiling by
+**16.6 points**.
+
+But the first VideoMAE attempt scored only 36.5% — it had moved the ceiling
+without reaching it. The fix was architectural: the decoder LSTM had been
+starting from a zero state, with video reaching it only through attention applied
+*after* the recurrence. Initialising the decoder from the encoder took it to
+42.3%. Both halves were needed; neither alone was enough.
+
+---
+
+## Limitations
+
+- **Thirteen actions only:** `fall` `grab` `gun` `hit` `kick` `lying_down` `run`
+  `sit` `sneak` `stand` `struggle` `throw` `walk`. Anything else gets described
+  with the closest of these words.
+- **Trained on isolated clips.** Every training clip was 3–4 seconds, trimmed,
+  containing exactly one action. Continuous footage is harder: actions start
+  mid-window, overlap, and sit inside long stretches of nothing. Expect
+  noticeably weaker results than 42.3% suggests.
+- **Small training set** — 780 clips, 60 per category. More data is the most
+  obvious remaining lever.
+- **`lying_down` is the weakest category** (1/12 on validation).
+- **Not real time.** Roughly 0.6 s of compute per 4-second window, so a
+  one-minute video takes about 20 seconds.
+- **Uploads are capped** at 100 MB and 5 minutes.
+
+---
+
+## Setup
+
+Requires Python 3.11.
+
+```bash
+git clone https://github.com/rithishss/CCTV-Footage-Captioning-and-Timestamp-Forwarding.git
+cd CCTV-Footage-Captioning-and-Timestamp-Forwarding/cv-cctv-action-timestamping
+
+python3.11 -m venv .venv
+./.venv/bin/python -m pip install -r requirements.txt
+
+./.venv/bin/python -m streamlit run Codebase/app.py
+```
+
+Then open http://localhost:8501 and press **Try the sample video**. The four
+model artifacts are committed, so nothing needs training to run the app.
+
+> **Note on TensorFlow.** This project runs **Keras 3 on its PyTorch backend**.
+> TensorFlow's native extension aborts on import on macOS 26 (`mutex lock
+> failed: Invalid argument`, on both 2.20.0 and 2.21.0). Keras 3 is
+> backend-agnostic, so the `.keras` model format is unaffected. `KERAS_BACKEND`
+> is set in code — no shell export needed.
+
+### Reproducing the model
+
+Only needed if you want to retrain. Requires the
+[CCTV Action Recognition dataset](https://www.kaggle.com/datasets/jonathannield/cctv-action-recognition-dataset)
+and an Anthropic API key for the captioning step.
+
+```bash
+./.venv/bin/python -m pip install -r requirements-dev.txt
+
+export ANTHROPIC_API_KEY=sk-ant-...
+./.venv/bin/python -u scripts/make_captions.py              # 780 captions, ~7 min, ~$3
+./.venv/bin/python -u scripts/extract_features_videomae.py  # ~7.5 min
+./.venv/bin/python -u scripts/train.py --features features_videomae.npy --no-svd
+./.venv/bin/python -u scripts/evaluate.py                   # action accuracy
+./.venv/bin/python -u scripts/demo_query_sweep.py           # end-to-end search test
+```
+
+---
+
+## Repository layout
+
+```
+Codebase/
+  app.py                  Streamlit front end
+  segmentation.py         windowing + CaptionSegment (the timestamps live here)
+  feature_extraction.py   VideoMAE backbone
+  lstm_captioning.py      caption a video -> list[CaptionSegment]
+  timestamping.py         semantic search -> ranked SearchHits
+  image_enhancement.py    unused ZeroDCE (see below)
+scripts/                  data prep, training, evaluation, tests
+Test Videos/              sample footage + the demo clip and its ground truth
+lstm_model.keras  tokenizer.json  scaler.pkl  svd.pkl   the trained artifacts
+```
+
+---
+
+## Corrections to the original README
+
+The previous version of this README described a pipeline the code did not
+implement. For the record:
+
+- It claimed **Zero-DCE** for image enhancement. Zero-DCE was never used — the
+  function was named `apply_zerodce` but its body is CLAHE, and the `ZeroDCE`
+  class has no trained weights plus two maths bugs (its spatial-consistency
+  kernels are shaped `(1,3,1,3)` where `conv2d` needs `(3,3,1,1)`, and its
+  total-variation loss subtracts mismatched slices). The current pipeline uses
+  neither: VideoMAE was pretrained on ordinary video and a contrast transform it
+  never saw would push inputs off-distribution.
+- It claimed **ResNet-50**. The code used **VGG16**; it now uses VideoMAE.
+- It cited **2,600 clips** (200 × 13). The dataset actually contains **2,300** —
+  `kick`, `sneak` and `throw` have 100 each, not 200.
+- It reported **~98% training / ~61% validation** accuracy. Those figures are
+  reproducible but misleading: a model hitting them names the correct action
+  only **11.5%** of the time, barely above the 7.7% chance baseline. Token-level
+  accuracy is dominated by function words and setting boilerplate, which is why
+  this README leads with action accuracy instead.
+
+---
+
+## Credits
+
+built the original pipeline and architecture.
+
+The trained artifacts from that work were never committed and are unrecoverable.
+This rebuild, by **Rithish S**, regenerated the caption set from scratch,
+retrained the model, built the temporal segmentation layer the original never
+had, replaced the feature backbone, and fixed the inference path so captioning
+and search actually connect.
+
+Built by Rithish S · [github.com/rithishss](https://github.com/rithishss)
