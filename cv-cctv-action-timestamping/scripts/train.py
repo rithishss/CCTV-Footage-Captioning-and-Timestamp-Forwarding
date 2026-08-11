@@ -171,9 +171,25 @@ def greedy_decode(model, video_feat: np.ndarray, tok: dict) -> str:
 
 # --------------------------------------------------------------------------- #
 def main() -> int:
+    global MAX_LENGTH, SVD_PATH, SCALER_PATH, TOKENIZER_PATH, MODEL_PATH, REPORT_PATH
+
     ap = argparse.ArgumentParser()
     ap.add_argument("--epochs", type=int, default=MAX_EPOCHS)
+    ap.add_argument("--max-length", type=int, default=None,
+                    help="override MAX_LENGTH; pair with --outdir for comparison runs")
+    ap.add_argument("--outdir", type=Path, default=None,
+                    help="write artifacts here instead of the project root (for comparisons)")
     args = ap.parse_args()
+
+    if args.max_length:
+        MAX_LENGTH = args.max_length
+    if args.outdir:
+        args.outdir.mkdir(parents=True, exist_ok=True)
+        SVD_PATH = args.outdir / "svd.pkl"
+        SCALER_PATH = args.outdir / "scaler.pkl"
+        TOKENIZER_PATH = args.outdir / "tokenizer.json"
+        MODEL_PATH = args.outdir / "lstm_model.keras"
+        REPORT_PATH = args.outdir / "train_report.json"
 
     for p in (CAPTIONS_PATH, FEATURES_PATH, INDEX_PATH):
         if not p.exists():

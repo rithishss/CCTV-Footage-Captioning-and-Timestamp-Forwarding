@@ -1,0 +1,79 @@
+{
+  "n_clips": 780,
+  "timesteps": 16,
+  "raw_feature_dim": 25120,
+  "svd": {
+    "components": 1500,
+    "explained_variance_ratio": 0.9347240328788757,
+    "fit_seconds": 16.5
+  },
+  "tokenizer": {
+    "vocab_size": 128,
+    "max_length": 14,
+    "truncated": 6,
+    "truncated_pct": 0.8,
+    "start_id": 2,
+    "end_id": 3
+  },
+  "split": {
+    "train": 624,
+    "val": 156,
+    "val_per_category": {
+      "fall": 12,
+      "grab": 12,
+      "gun": 12,
+      "hit": 12,
+      "kick": 12,
+      "lying_down": 12,
+      "run": 12,
+      "sit": 12,
+      "sneak": 12,
+      "stand": 12,
+      "struggle": 12,
+      "throw": 12,
+      "walk": 12
+    }
+  },
+  "training": {
+    "epochs_run": 37,
+    "best_epoch": 25,
+    "train_loss": 0.07197631150484085,
+    "val_loss": 1.1615009307861328,
+    "train_acc": 0.9896277189254761,
+    "val_acc": 0.6465387940406799,
+    "train_seconds": 28.5,
+    "params": 2144384
+  },
+  "samples": [
+    {
+      "clip": "run/UCFCRIME_Assault014_run_1.mp4",
+      "category": "run",
+      "actual": "A person runs on a street in daylight.",
+      "generated": "a person falls to the ground in a shop indoors"
+    },
+    {
+      "clip": "hit/NTU_fight0232_hit_4.mp4",
+      "category": "hit",
+      "actual": "Several people hit one another in a shop indoors.",
+      "generated": "a person walks in a shop indoors"
+    },
+    {
+      "clip": "stand/UCFCRIME_Abuse038_stand_1.mp4",
+      "category": "stand",
+      "actual": "Two people stand on a sidewalk at night.",
+      "generated": "a man walks in a shop indoors"
+    },
+    {
+      "clip": "kick/NTU_fight0050_kick_1.mp4",
+      "category": "kick",
+      "actual": "Two men kick another person on a sidewalk in daylight.",
+      "generated": "a person stands on a parking lot in daylight"
+    },
+    {
+      "clip": "gun/UCFCRIME_Robbery078_gun_2.mp4",
+      "category": "gun",
+      "actual": "A person points a gun at a man in a shop indoors.",
+      "generated": "a man grabs an object in a shop indoors"
+    }
+  ]
+}
