@@ -35,3 +35,6 @@ lol_dataset/
 scripts/_vmae_*/lstm_model.keras
 scripts/_vmae_*/svd.pkl
 scripts/_vmae_*/scaler.pkl
+
+# Original project report — removed from the repo and from history.
+CV_Project_Report.pdf

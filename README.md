@@ -172,4 +172,6 @@ lstm_model.keras  tokenizer.json  scaler.pkl  svd.pkl   the trained artifacts
 
 ---
 
+
+
 Built by Rithish S · [github.com/rithishss](https://github.com/rithishss)
