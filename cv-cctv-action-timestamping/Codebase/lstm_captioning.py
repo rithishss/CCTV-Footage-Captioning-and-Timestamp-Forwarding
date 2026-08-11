@@ -30,7 +30,7 @@ os.environ.setdefault("PYTORCH_ENABLE_MPS_FALLBACK", "1")
 import joblib  # noqa: E402
 import numpy as np  # noqa: E402
 
-from feature_extraction import FEATURE_DIM, features_from_frames, get_vgg16  # noqa: E402
+from feature_extraction import FEATURE_DIM, features_from_frames, get_backbone  # noqa: E402
 from segmentation import (  # noqa: E402
     CaptionSegment,
     VideoReadError,
@@ -70,7 +70,7 @@ def load_artifacts():
             "tokenizer": tokenizer,
             "svd": joblib.load(SVD_PATH),
             "scaler": joblib.load(SCALER_PATH),
-            "vgg": get_vgg16(),
+            "backbone": get_backbone(),
             "max_length": int(tokenizer.get("max_length", 11)),
         }
     return _ARTIFACTS
@@ -117,11 +117,10 @@ def caption_video(video_path: str | Path, progress=None) -> list[CaptionSegment]
 
     segments: list[CaptionSegment] = []
     for n, w in enumerate(windows, 1):
-        rgb = [frame_cache[i][0] for i in w.frame_indices]
-        gray = [frame_cache[i][1] for i in w.frame_indices]
+        rgb = [frame_cache[i] for i in w.frame_indices]
 
-        feats = features_from_frames(rgb, gray, art["vgg"])          # (T, 25120)
-        reduced = art["svd"].transform(feats)                         # (T, 1500)
+        feats = features_from_frames(rgb)                             # (8, 1536)
+        reduced = art["svd"].transform(feats)                         # identity now
         scaled = art["scaler"].transform(reduced).astype("float32")
 
         text = generate_caption_greedy(art["model"], scaled, art["tokenizer"],

@@ -1,29 +1,29 @@
 {
   "val": {
     "n": 156,
-    "action_accuracy": 0.359,
-    "exact_match": 0.0897,
+    "action_accuracy": 0.4231,
+    "exact_match": 0.1026,
     "per_category": {
       "fall": 0.5,
-      "grab": 0.333,
+      "grab": 0.583,
       "gun": 0.417,
-      "hit": 0.5,
-      "kick": 0.333,
-      "lying_down": 0.167,
+      "hit": 0.417,
+      "kick": 0.417,
+      "lying_down": 0.083,
       "run": 0.333,
-      "sit": 0.0,
-      "sneak": 0.5,
+      "sit": 0.333,
+      "sneak": 0.583,
       "stand": 0.333,
-      "struggle": 0.583,
-      "throw": 0.333,
-      "walk": 0.333
+      "struggle": 0.5,
+      "throw": 0.417,
+      "walk": 0.583
     },
     "records": [
       {
         "clip": "struggle/NTU_fight0012_struggle_1.mp4",
         "category": "struggle",
         "actual": "Two men struggle in a restaurant indoors while a person watches",
-        "generated": "several people hit a person in a restaurant indoors",
+        "generated": "a person kicks another person in a restaurant indoors",
         "action_hit": false
       },
       {
@@ -37,8 +37,8 @@
         "clip": "walk/UCFCRIME_Arson028_walk_1.mp4",
         "category": "walk",
         "actual": "A person walks across a parking lot at night.",
-        "generated": "a person runs across a parking lot at night",
-        "action_hit": false
+        "generated": "a person walks on a parking lot at night",
+        "action_hit": true
       },
       {
         "clip": "run/UCFCRIME_Burglary062_run_1.mp4",
@@ -51,21 +51,21 @@
         "clip": "gun/UCFCRIME_Robbery105_gun_1.mp4",
         "category": "gun",
         "actual": "A man brandishes a gun in a shop indoors.",
-        "generated": "a man throws an object in a room indoors",
+        "generated": "a man throws an object in a shop indoors",
         "action_hit": false
       },
       {
         "clip": "gun/UCFCRIME_Robbery132_gun_1.mp4",
         "category": "gun",
         "actual": "A man points a gun at a person in a shop indoors.",
-        "generated": "a man points a gun in a store indoors",
-        "action_hit": true
+        "generated": "a man grabs an object in a shop indoors",
+        "action_hit": false
       },
       {
         "clip": "kick/NTU_fight0143_kick_1.mp4",
         "category": "kick",
         "actual": "Several people kick a person on a sidewalk at night.",
-        "generated": "a man kicks another person on a sidewalk at night",
+        "generated": "a man kicks another person on a street at night",
         "action_hit": true
       },
       {
@@ -86,7 +86,7 @@
         "clip": "kick/UCFCRIME_Assault029_kick_1.mp4",
         "category": "kick",
         "actual": "A person kicks another person on a street at night.",
-        "generated": "a person walks in a parking lot in daylight",
+        "generated": "a person stands on a parking lot in daylight",
         "action_hit": false
       },
       {
@@ -114,7 +114,7 @@
         "clip": "kick/NTU_fight0050_kick_1.mp4",
         "category": "kick",
         "actual": "Two men kick another person on a sidewalk in daylight.",
-        "generated": "a man hits another person in a shop in daylight",
+        "generated": "a man hits another person on a sidewalk in daylight",
         "action_hit": false
       },
       {
@@ -128,28 +128,28 @@
         "clip": "struggle/NTU_fight0193_struggle_1.mp4",
         "category": "struggle",
         "actual": "Several people struggle in a parking lot in daylight.",
-        "generated": "several people run in a restaurant indoors",
-        "action_hit": false
+        "generated": "several people struggle on a sidewalk in daylight",
+        "action_hit": true
       },
       {
         "clip": "throw/YOUTUBE_YouTubeCCTV151_throw_1.mp4",
         "category": "throw",
         "actual": "A person throws an object in an office indoors.",
-        "generated": "several people sit in an office indoors",
-        "action_hit": false
+        "generated": "a person throws an object in an office indoors",
+        "action_hit": true
       },
       {
         "clip": "sneak/UCFCRIME_Stealing042_sneak_1.mp4",
         "category": "sneak",
         "actual": "A person sneaks along a street in daylight.",
-        "generated": "a person lies on the ground in a sidewalk in daylight",
+        "generated": "a person walks in a parking lot in dim light",
         "action_hit": false
       },
       {
         "clip": "stand/UCFCRIME_Arrest028_stand_1.mp4",
         "category": "stand",
         "actual": "Several people stand in an elevator indoors.",
-        "generated": "a person throws an object in a yard in daylight",
+        "generated": "a man grabs an object in a room indoors",
         "action_hit": false
       },
       {
@@ -177,29 +177,29 @@
         "clip": "grab/UCFCRIME_Burglary020_grab_1.mp4",
         "category": "grab",
         "actual": "A person grabs an item in a store in dim light.",
-        "generated": "a person lies on the ground in a shop indoors",
-        "action_hit": false
+        "generated": "a person grabs an object in a shop indoors",
+        "action_hit": true
       },
       {
         "clip": "gun/UCFCRIME_Robbery057_gun_1.mp4",
         "category": "gun",
         "actual": "A man points a gun at a person in a store indoors.",
-        "generated": "several people grab and other in a shop indoors",
+        "generated": "a man sits in a store indoors",
         "action_hit": false
       },
       {
         "clip": "throw/UCFCRIME_Vandalism033_throw_4.mp4",
         "category": "throw",
         "actual": "A person throws an object in a yard in daylight.",
-        "generated": "a person walks on a shop in daylight",
-        "action_hit": false
+        "generated": "a person throws an object in a yard in daylight",
+        "action_hit": true
       },
       {
         "clip": "stand/UCFCRIME_Arrest016_stand_2.mp4",
         "category": "stand",
         "actual": "A man stands on a sidewalk in daylight.",
-        "generated": "a man stands on a sidewalk in daylight",
-        "action_hit": true
+        "generated": "a person walks on a sidewalk in daylight",
+        "action_hit": false
       },
       {
         "clip": "run/SPHAR_p17faint_run_1.mp4",
@@ -219,28 +219,28 @@
         "clip": "sneak/UCFCRIME_Shooting017_sneak_1.mp4",
         "category": "sneak",
         "actual": "A person sneaks across an office in dim light.",
-        "generated": "a person sneaks through an office indoors",
-        "action_hit": true
+        "generated": "a person falls to the ground in a shop in dim light",
+        "action_hit": false
       },
       {
         "clip": "fall/NTU_fight0095_fall_1.mp4",
         "category": "fall",
         "actual": "A person falls to the ground in a corridor indoors.",
-        "generated": "a man lies in a room indoors",
+        "generated": "a person falls to the ground in a corridor indoors",
         "action_hit": true
       },
       {
         "clip": "run/UCFCRIME_Burglary077_run_2.mp4",
         "category": "run",
         "actual": "Two people run through a shop indoors.",
-        "generated": "a person grabs something in a store indoors",
+        "generated": "a person grabs an object in a shop indoors",
         "action_hit": false
       },
       {
         "clip": "lying_down/UCFCRIME_Robbery059_lying_down_1.mp4",
         "category": "lying_down",
         "actual": "A person lies on the ground in a store indoors.",
-        "generated": "a man sits on a shop indoors",
+        "generated": "a person sneaks through a store indoors",
         "action_hit": false
       },
       {
@@ -268,14 +268,14 @@
         "clip": "throw/YOUTUBE_YouTubeCCTV242_throw_2.mp4",
         "category": "throw",
         "actual": "Two people ride and throw an object on a road in daylight.",
-        "generated": "a man lies on a sidewalk in daylight",
+        "generated": "a person kicks an object on a street in daylight",
         "action_hit": false
       },
       {
         "clip": "lying_down/UCFCRIME_Abuse008_lying_down_1.mp4",
         "category": "lying_down",
         "actual": "A person lies on the floor in a room indoors.",
-        "generated": "a woman stands in a room indoors",
+        "generated": "two people stand in a room indoors",
         "action_hit": false
       },
       {
@@ -296,21 +296,21 @@
         "clip": "stand/UCFCRIME_Assault013_stand_1.mp4",
         "category": "stand",
         "actual": "A person stands in a restaurant in dim light.",
-        "generated": "a man lies on the ground in a bar indoors",
+        "generated": "a man brandishes a gun in a bar indoors",
         "action_hit": false
       },
       {
         "clip": "sit/NTU_fight0067_sit_1.mp4",
         "category": "sit",
         "actual": "A person sits down in a bar in dim light.",
-        "generated": "a person lies on the ground in a shop indoors",
+        "generated": "a person sneaks through a shop in daylight",
         "action_hit": false
       },
       {
         "clip": "kick/YOUTUBE_YouTubeCCTV120_kick_2.mp4",
         "category": "kick",
         "actual": "A man kicks at a door in a yard in daylight.",
-        "generated": "a man kicks something in a yard in daylight",
+        "generated": "a man kicks an object in a yard in daylight",
         "action_hit": true
       },
       {
@@ -324,8 +324,8 @@
         "clip": "sneak/UCFCRIME_Stealing027_sneak_1.mp4",
         "category": "sneak",
         "actual": "Two people sneak in a parking lot at night.",
-        "generated": "a man throws an object in a parking lot in daylight",
-        "action_hit": false
+        "generated": "a person sneaks in a room in dim light",
+        "action_hit": true
       },
       {
         "clip": "stand/UCFCRIME_Arrest003_stand_2.mp4",
@@ -338,14 +338,14 @@
         "clip": "sit/UCFCRIME_Robbery144_sit_1.mp4",
         "category": "sit",
         "actual": "Several people sit on a sidewalk in daylight.",
-        "generated": "several people struggle in a shop indoors",
+        "generated": "a person kicks an object in a yard in daylight",
         "action_hit": false
       },
       {
         "clip": "kick/UCFCRIME_Fighting036_kick_4.mp4",
         "category": "kick",
         "actual": "Two men kick a person on a street at night.",
-        "generated": "two men kick a person on a street in daylight",
+        "generated": "a man kicks a person on a sidewalk in daylight",
         "action_hit": true
       },
       {
@@ -359,21 +359,21 @@
         "clip": "sneak/UCFCRIME_Stealing084_sneak_1.mp4",
         "category": "sneak",
         "actual": "Two people sneak in an alley at night.",
-        "generated": "two people sneak through an alley at night",
+        "generated": "two people sneak in a narrow alley at night",
         "action_hit": true
       },
       {
         "clip": "sit/NTU_fight0244_sit_1.mp4",
         "category": "sit",
         "actual": "Several people sit in an office indoors.",
-        "generated": "several people struggle in an office indoors",
-        "action_hit": false
+        "generated": "several people sit in a lobby indoors",
+        "action_hit": true
       },
       {
         "clip": "walk/UCFCRIME_Arson034_walk_1.mp4",
         "category": "walk",
         "actual": "Two people walk on a sidewalk at night.",
-        "generated": "a person walks in a road in daylight",
+        "generated": "a person walks on a sidewalk in daylight",
         "action_hit": true
       },
       {
@@ -387,7 +387,7 @@
         "clip": "fall/UCFCRIME_Fighting018_fall_1.mp4",
         "category": "fall",
         "actual": "A person falls to the ground in a corridor in dim light.",
-        "generated": "a person walks on a sidewalk at night",
+        "generated": "a person runs on a sidewalk at night",
         "action_hit": false
       },
       {
@@ -401,21 +401,21 @@
         "clip": "grab/UCFCRIME_Burglary091_grab_1.mp4",
         "category": "grab",
         "actual": "A person grabs something in a shop in dim light.",
-        "generated": "a person grabs an object in a store indoors",
+        "generated": "a person grabs an object in a shop in dim light",
         "action_hit": true
       },
       {
         "clip": "lying_down/UCFCRIME_Fighting018_lying_down_1.mp4",
         "category": "lying_down",
         "actual": "A person lies on the ground in a corridor in dim light.",
-        "generated": "a person lies on a sidewalk at night",
-        "action_hit": true
+        "generated": "a person walks on a sidewalk at night",
+        "action_hit": false
       },
       {
         "clip": "struggle/NTU_fight0139_struggle_2.mp4",
         "category": "struggle",
         "actual": "Several people struggle on a sidewalk in daylight.",
-        "generated": "several people hit each other in a sidewalk in daylight",
+        "generated": "several people hit each other in a shop in daylight",
         "action_hit": false
       },
       {
@@ -436,22 +436,22 @@
         "clip": "lying_down/UCFCRIME_Shooting010_lying_down_1.mp4",
         "category": "lying_down",
         "actual": "A person lies on the ground in a parking lot in daylight.",
-        "generated": "a man runs across a parking lot in daylight",
-        "action_hit": false
+        "generated": "a person lies on a street in daylight",
+        "action_hit": true
       },
       {
         "clip": "struggle/NTU_fight0051_struggle_2.mp4",
         "category": "struggle",
         "actual": "Several people struggle in a yard at night.",
-        "generated": "several people struggle in a driveway at night",
-        "action_hit": true
+        "generated": "a person kicks another person on a street at night",
+        "action_hit": false
       },
       {
         "clip": "walk/UCFCRIME_Arson007_walk_1.mp4",
         "category": "walk",
         "actual": "A person walks in a yard at night.",
-        "generated": "a person throws an object on a street at night",
-        "action_hit": false
+        "generated": "a person walks on a sidewalk at night",
+        "action_hit": true
       },
       {
         "clip": "kick/UCFCRIME_Robbery019_kick_1.mp4",
@@ -478,22 +478,22 @@
         "clip": "lying_down/UCFCRIME_Robbery066_lying_down_1.mp4",
         "category": "lying_down",
         "actual": "A person lies on the ground in a shop indoors.",
-        "generated": "a person lies on the floor in a shop indoors",
-        "action_hit": true
+        "generated": "a person sits in a room in dim light",
+        "action_hit": false
       },
       {
         "clip": "throw/NTU_fight0993_throw_1.mp4",
         "category": "throw",
         "actual": "A man throws an object in a yard at night.",
-        "generated": "a person throws an object in a yard at night",
+        "generated": "a man throws an object in a yard at night",
         "action_hit": true
       },
       {
         "clip": "gun/UCFCRIME_Robbery078_gun_2.mp4",
         "category": "gun",
         "actual": "A person points a gun at a man in a shop indoors.",
-        "generated": "a man points a gun at a person in a shop indoors",
-        "action_hit": true
+        "generated": "a person falls to the ground in a shop indoors",
+        "action_hit": false
       },
       {
         "clip": "hit/NTU_fight0232_hit_4.mp4",
@@ -506,84 +506,84 @@
         "clip": "throw/YOUTUBE_YouTubeCCTV247_throw_1.mp4",
         "category": "throw",
         "actual": "A person throws an object on a street in daylight.",
-        "generated": "a person runs in a shop indoors",
+        "generated": "a person lies on the ground on a street at night",
         "action_hit": false
       },
       {
         "clip": "struggle/NTU_fight0136_struggle_1.mp4",
         "category": "struggle",
         "actual": "Several people struggle on a street in daylight.",
-        "generated": "several people struggle in a parking lot in daylight",
+        "generated": "several people struggle on a street in daylight",
         "action_hit": true
       },
       {
         "clip": "sneak/UCFCRIME_Stealing002_sneak_1.mp4",
         "category": "sneak",
         "actual": "A man sneaks along a driveway in a parking lot in daylight.",
-        "generated": "a person falls to the ground in a shop indoors",
-        "action_hit": false
+        "generated": "a person sneaks on a street in daylight",
+        "action_hit": true
       },
       {
         "clip": "walk/UCFCRIME_Arrest035_walk_1.mp4",
         "category": "walk",
         "actual": "A person walks in a store indoors.",
-        "generated": "a man grabs another person in a store indoors",
+        "generated": "a man brandishes a gun in a shop indoors",
         "action_hit": false
       },
       {
         "clip": "run/UCFCRIME_Burglary033_run_1.mp4",
         "category": "run",
         "actual": "A person runs away from a yard at night.",
-        "generated": "a person throws an object in a yard at night",
+        "generated": "a person grabs an object in a room indoors",
         "action_hit": false
       },
       {
         "clip": "gun/UCFCRIME_Robbery079_gun_1.mp4",
         "category": "gun",
         "actual": "A man holds a gun in a store indoors.",
-        "generated": "a man grabs a person in a shop indoors",
-        "action_hit": false
+        "generated": "a man points a gun at a person in a restaurant indoors",
+        "action_hit": true
       },
       {
         "clip": "gun/NTU_fight0222_gun_1.mp4",
         "category": "gun",
         "actual": "Several people brandish guns at a person in a lobby at night.",
-        "generated": "a person lies on a street at night",
+        "generated": "a person lies on a street in dim light",
         "action_hit": false
       },
       {
         "clip": "throw/YOUTUBE_YouTubeCCTV016_throw_1.mp4",
         "category": "throw",
         "actual": "A person throws an object in a room indoors.",
-        "generated": "a person falls to the ground in a room indoors",
+        "generated": "two men struggle in a room in daylight",
         "action_hit": false
       },
       {
         "clip": "sit/UCFCRIME_Robbery080_sit_1.mp4",
         "category": "sit",
         "actual": "A man sits down on the floor in an office indoors.",
-        "generated": "a person lies on the floor in an office indoors",
+        "generated": "a person grabs an object in an office indoors",
         "action_hit": false
       },
       {
         "clip": "lying_down/UCFCRIME_Arrest008_lying_down_1.mp4",
         "category": "lying_down",
         "actual": "A person lies on the ground in a parking lot at night.",
-        "generated": "a person runs through an office indoors",
+        "generated": "a person sneaks through a parking lot in dim light",
         "action_hit": false
       },
       {
         "clip": "hit/NTU_fight0242_hit_1.mp4",
         "category": "hit",
         "actual": "A man hits another person in an office indoors.",
-        "generated": "several people sit in an office indoors",
+        "generated": "several people sit in a shop indoors",
         "action_hit": false
       },
       {
         "clip": "struggle/NTU_fight0080_struggle_1.mp4",
         "category": "struggle",
         "actual": "Several people struggle on the floor in a lobby indoors.",
-        "generated": "several people sit on a street in daylight",
+        "generated": "a man falls to the ground on a street in daylight",
         "action_hit": false
       },
       {
@@ -597,7 +597,7 @@
         "clip": "throw/YOUTUBE_YouTubeCCTV017_throw_1.mp4",
         "category": "throw",
         "actual": "A person throws something in a yard in daylight.",
-        "generated": "a person runs through a shop indoors",
+        "generated": "a person kicks another person in a yard in daylight",
         "action_hit": false
       },
       {
@@ -611,7 +611,7 @@
         "clip": "throw/UCFCRIME_Fighting043_throw_1.mp4",
         "category": "throw",
         "actual": "A man throws an object on a street in daylight.",
-        "generated": "a person walks on a street in daylight",
+        "generated": "a person stands on a sidewalk in daylight",
         "action_hit": false
       },
       {
@@ -625,49 +625,49 @@
         "clip": "fall/NTU_fight0197_fall_1.mp4",
         "category": "fall",
         "actual": "A person falls to the ground in a shop indoors.",
-        "generated": "several people struggle and grapple in a shop indoors",
+        "generated": "several people struggle and in a shop indoors",
         "action_hit": false
       },
       {
         "clip": "grab/UCFCRIME_Burglary099_grab_1.mp4",
         "category": "grab",
         "actual": "A person grabs an object in a room in dim light.",
-        "generated": "a man throws an object in a yard at night",
+        "generated": "a person sneaks through a room in dim light",
         "action_hit": false
       },
       {
         "clip": "sneak/YOUTUBE_YouTubeCCTV027_sneak_1.mp4",
         "category": "sneak",
         "actual": "A person sneaks along a platform at night.",
-        "generated": "a person sneaks on a street at night",
-        "action_hit": true
+        "generated": "several people stand in a restaurant indoors",
+        "action_hit": false
       },
       {
         "clip": "stand/UCFCRIME_Arrest009_stand_1.mp4",
         "category": "stand",
         "actual": "Two people stand in a lobby indoors.",
-        "generated": "a person grabs an object in a shop indoors",
-        "action_hit": false
+        "generated": "a person stands in a store indoors",
+        "action_hit": true
       },
       {
         "clip": "walk/UCFCRIME_Arson044_walk_1.mp4",
         "category": "walk",
         "actual": "A person walks on a street at night.",
-        "generated": "a person runs through a restaurant indoors",
+        "generated": "a person grabs an object in a yard at night",
         "action_hit": false
       },
       {
         "clip": "sit/UCFCRIME_Robbery093_sit_2.mp4",
         "category": "sit",
         "actual": "A woman sits in a shop in daylight.",
-        "generated": "a man brandishes a gun in a station indoors",
+        "generated": "a person grabs an object in a room indoors",
         "action_hit": false
       },
       {
         "clip": "hit/NTU_fight0146_hit_1.mp4",
         "category": "hit",
         "actual": "A man hits another person in a restaurant indoors.",
-        "generated": "several people sit in a restaurant indoors",
+        "generated": "a person falls to the ground in a restaurant indoors",
         "action_hit": false
       },
       {
@@ -681,127 +681,127 @@
         "clip": "hit/NTU_fight0109_hit_1.mp4",
         "category": "hit",
         "actual": "Several people hit one another on a sidewalk at night.",
-        "generated": "several people hit one another on a street at night",
-        "action_hit": true
+        "generated": "several people struggle on a sidewalk in daylight",
+        "action_hit": false
       },
       {
         "clip": "fall/NTU_fight0400_fall_1.mp4",
         "category": "fall",
         "actual": "A man falls to the ground in a lobby indoors.",
-        "generated": "several people struggle in a lobby in dim light",
+        "generated": "a man hits another person in a lobby in dim light",
         "action_hit": false
       },
       {
         "clip": "hit/NTU_fight0070_hit_1.mp4",
         "category": "hit",
         "actual": "Two people hit each other in an elevator in dim light.",
-        "generated": "several people struggle in a room at night",
+        "generated": "a person throws a person in a shop in dim light",
         "action_hit": false
       },
       {
         "clip": "kick/UCFCRIME_Burglary005_kick_1.mp4",
         "category": "kick",
         "actual": "A person kicks in a yard in daylight.",
-        "generated": "a person runs across a yard in daylight",
+        "generated": "a man runs across a yard in daylight",
         "action_hit": false
       },
       {
         "clip": "grab/UCFCRIME_Burglary019_grab_1.mp4",
         "category": "grab",
         "actual": "A person grabs something in a restaurant indoors.",
-        "generated": "a man brandishes a gun in a store indoors",
-        "action_hit": false
+        "generated": "a man grabs an object in a shop indoors",
+        "action_hit": true
       },
       {
         "clip": "gun/UCFCRIME_Robbery006_gun_2.mp4",
         "category": "gun",
         "actual": "A man brandishes a gun in a shop indoors.",
-        "generated": "a man brandishes a gun in a shop indoors",
-        "action_hit": true
+        "generated": "a person falls to the ground in a shop indoors",
+        "action_hit": false
       },
       {
         "clip": "stand/UCFCRIME_Abuse038_stand_1.mp4",
         "category": "stand",
         "actual": "Two people stand on a sidewalk at night.",
-        "generated": "a person runs on a sidewalk at night",
+        "generated": "a person kicks on a sidewalk at night",
         "action_hit": false
       },
       {
         "clip": "struggle/NTU_fight0051_struggle_4.mp4",
         "category": "struggle",
         "actual": "Two people struggle in a driveway on a street at night.",
-        "generated": "several people struggle in a driveway at night",
+        "generated": "several people struggle on a driveway on a street at night",
         "action_hit": true
       },
       {
         "clip": "stand/UCFCRIME_Abuse040_stand_2.mp4",
         "category": "stand",
         "actual": "Two people stand in a room indoors.",
-        "generated": "two people stand together in a room indoors",
-        "action_hit": true
+        "generated": "a person sits in a room indoors",
+        "action_hit": false
       },
       {
         "clip": "grab/UCFCRIME_Burglary037_grab_1.mp4",
         "category": "grab",
         "actual": "Two men grab each other in a bar in dim light.",
-        "generated": "a man kicks another person in a corridor at night",
+        "generated": "a man throws another person in a bar in dim light",
         "action_hit": false
       },
       {
         "clip": "sneak/YOUTUBE_YouTubeCCTV010_sneak_1.mp4",
         "category": "sneak",
         "actual": "A person sneaks past a man in a store indoors.",
-        "generated": "a man sneaks behind a person in a store indoors",
+        "generated": "a person sneaks behind a man in a store indoors",
         "action_hit": true
       },
       {
         "clip": "hit/NTU_fight0136_hit_1.mp4",
         "category": "hit",
         "actual": "Several people hit one another in a parking lot in daylight.",
-        "generated": "several people struggle in a parking lot in daylight",
+        "generated": "several people struggle on a street in daylight",
         "action_hit": false
       },
       {
         "clip": "sit/NTU_fight0599_sit_1.mp4",
         "category": "sit",
         "actual": "Two people sit in a restaurant in dim light.",
-        "generated": "a person sneaks through a parking lot in dim light",
+        "generated": "a person sneaks through a room in dim light",
         "action_hit": false
       },
       {
         "clip": "sit/UCFCRIME_Robbery093_sit_1.mp4",
         "category": "sit",
         "actual": "A person sits down in an office indoors.",
-        "generated": "a person falls to the ground in a shop indoors",
-        "action_hit": false
+        "generated": "a person sits in a shop indoors",
+        "action_hit": true
       },
       {
         "clip": "run/NTU_fight0085_run_2.mp4",
         "category": "run",
         "actual": "Several people run on a street in daylight.",
-        "generated": "several people run on a street in daylight",
+        "generated": "several people run run on a street in daylight",
         "action_hit": true
       },
       {
         "clip": "sit/UCFCRIME_Shooting017_sit_1.mp4",
         "category": "sit",
         "actual": "A person sits down in an office indoors.",
-        "generated": "a person sneaks through an office indoors",
+        "generated": "a man brandishes a gun in a shop in dim light",
         "action_hit": false
       },
       {
         "clip": "sit/NTU_fight0162_sit_1.mp4",
         "category": "sit",
         "actual": "A woman sits in a shop indoors while a man stands.",
-        "generated": "a man hits another person in a store indoors",
-        "action_hit": false
+        "generated": "a person sits in a store indoors",
+        "action_hit": true
       },
       {
         "clip": "throw/NTU_fight0029_throw_2.mp4",
         "category": "throw",
         "actual": "A man throws an object in an alley in daylight.",
-        "generated": "a man throws an object in a yard in daylight",
-        "action_hit": true
+        "generated": "a man hits another person in a yard in daylight",
+        "action_hit": false
       },
       {
         "clip": "lying_down/UCFCRIME_Assault046_lying_down_1.mp4",
@@ -814,49 +814,49 @@
         "clip": "hit/NTU_fight0114_hit_1.mp4",
         "category": "hit",
         "actual": "A man hits another person in a room indoors.",
-        "generated": "two men sit in a room indoors while several people",
+        "generated": "two men fight in a room indoors while several people",
         "action_hit": false
       },
       {
         "clip": "stand/UCFCRIME_Arson044_stand_1.mp4",
         "category": "stand",
         "actual": "Two people stand on a street at night.",
-        "generated": "a person runs through a restaurant indoors",
+        "generated": "a person sneaks in an alley at night",
         "action_hit": false
       },
       {
         "clip": "fall/NTU_fight0146_fall_1.mp4",
         "category": "fall",
         "actual": "A person falls to the ground in a shop indoors.",
-        "generated": "a man hits another person in a shop indoors",
+        "generated": "several people hit each other in a shop indoors",
         "action_hit": false
       },
       {
         "clip": "struggle/NTU_fight0120_struggle_1.mp4",
         "category": "struggle",
         "actual": "Several people struggle on a street in daylight.",
-        "generated": "several people struggle in a shop indoors",
-        "action_hit": true
+        "generated": "a man hits another person in a shop indoors",
+        "action_hit": false
       },
       {
         "clip": "stand/UCFCRIME_Abuse004_stand_2.mp4",
         "category": "stand",
         "actual": "Two men stand in a corridor in dim light.",
-        "generated": "a man stands in a corridor in dim light",
+        "generated": "a man stands in a corridor indoors",
         "action_hit": true
       },
       {
         "clip": "run/UCFCRIME_Assault014_run_1.mp4",
         "category": "run",
         "actual": "A person runs on a street in daylight.",
-        "generated": "two men stand in a parking lot in daylight",
+        "generated": "two people stand together in a parking lot at night",
         "action_hit": false
       },
       {
         "clip": "grab/UCFCRIME_Burglary013_grab_1.mp4",
         "category": "grab",
         "actual": "Two men grab at an object in a lobby indoors.",
-        "generated": "two people stand in a room indoors",
+        "generated": "a man throws an object in a store indoors",
         "action_hit": false
       },
       {
@@ -870,8 +870,8 @@
         "clip": "sit/UCFCRIME_Robbery024_sit_1.mp4",
         "category": "sit",
         "actual": "A person sits in an office indoors.",
-        "generated": "a man brandishes a gun in a lobby indoors",
-        "action_hit": false
+        "generated": "a person sits in a lobby indoors",
+        "action_hit": true
       },
       {
         "clip": "sit/UCFCRIME_Burglary064_sit_2.mp4",
@@ -891,7 +891,7 @@
         "clip": "grab/UCFCRIME_Robbery003_grab_1.mp4",
         "category": "grab",
         "actual": "A man grabs an object from another person in a shop indoors.",
-        "generated": "a man brandishes a gun in a store indoors",
+        "generated": "a man brandishes a gun in a shop indoors",
         "action_hit": false
       },
       {
@@ -912,29 +912,29 @@
         "clip": "grab/UCFCRIME_Robbery011_grab_1.mp4",
         "category": "grab",
         "actual": "A person grabs another person in a store indoors.",
-        "generated": "a person falls to the ground in a store indoors",
-        "action_hit": false
+        "generated": "a man grabs an object in a store indoors",
+        "action_hit": true
       },
       {
         "clip": "fall/SPHAR_p01faint_fall_1.mp4",
         "category": "fall",
         "actual": "A man falls to the ground in a parking lot in daylight.",
-        "generated": "a woman falls to the ground in a parking lot in daylight",
+        "generated": "a person falls to the ground in a parking lot in daylight",
         "action_hit": true
       },
       {
         "clip": "gun/NTU_fight0994_gun_1.mp4",
         "category": "gun",
         "actual": "Two men brandish guns at a person in a shop indoors.",
-        "generated": "several people struggle in a shop indoors",
-        "action_hit": false
+        "generated": "a man brandishes a gun in a shop indoors",
+        "action_hit": true
       },
       {
         "clip": "walk/UCFCRIME_Arrest016_walk_2.mp4",
         "category": "walk",
         "actual": "Several people walk on a sidewalk in daylight.",
-        "generated": "a person falls to the ground on a sidewalk in daylight",
-        "action_hit": false
+        "generated": "a man walks on a sidewalk in daylight",
+        "action_hit": true
       },
       {
         "clip": "gun/UCFCRIME_Robbery060_gun_1.mp4",
@@ -947,15 +947,15 @@
         "clip": "stand/UCFCRIME_Arrest014_stand_2.mp4",
         "category": "stand",
         "actual": "Several people stand in a shop indoors.",
-        "generated": "a person falls to the ground in a shop indoors",
-        "action_hit": false
+        "generated": "a person stands in a shop indoors",
+        "action_hit": true
       },
       {
         "clip": "kick/NTU_fight0209_kick_1.mp4",
         "category": "kick",
         "actual": "A man kicks another person in a store indoors.",
-        "generated": "several people fight and another person in a store indoors",
-        "action_hit": false
+        "generated": "a man kicks another person another another person in a store indoors",
+        "action_hit": true
       },
       {
         "clip": "throw/UCFCRIME_Vandalism002_throw_4.mp4",
@@ -968,15 +968,15 @@
         "clip": "sit/UCFCRIME_Robbery020_sit_1.mp4",
         "category": "sit",
         "actual": "A man sits on the floor in a room indoors.",
-        "generated": "a man grabs an object in a room indoors",
+        "generated": "a person falls to the ground in a room indoors",
         "action_hit": false
       },
       {
         "clip": "gun/UCFCRIME_Robbery099_gun_1.mp4",
         "category": "gun",
         "actual": "A man points a gun in a shop indoors.",
-        "generated": "a person lies on a sidewalk in daylight",
-        "action_hit": false
+        "generated": "a man brandishes a gun in a shop indoors",
+        "action_hit": true
       },
       {
         "clip": "stand/UCFCRIME_Arson027_stand_1.mp4",
@@ -989,7 +989,7 @@
         "clip": "run/UCFCRIME_Arson038_run_1.mp4",
         "category": "run",
         "actual": "A person runs away on a street at night.",
-        "generated": "a person kicks on a sidewalk at night",
+        "generated": "a person throws an object on a street at night",
         "action_hit": false
       },
       {
@@ -1017,14 +1017,14 @@
         "clip": "lying_down/SPHAR_p01faint_lying_down_1.mp4",
         "category": "lying_down",
         "actual": "A person lies on the ground in a parking lot in daylight.",
-        "generated": "a woman falls to the ground in a parking lot in daylight",
+        "generated": "a person falls to the ground in a parking lot in daylight",
         "action_hit": false
       },
       {
         "clip": "walk/UCFCRIME_Arrest033_walk_1.mp4",
         "category": "walk",
         "actual": "A man walks along a corridor in dim light.",
-        "generated": "a person lies on the ground in a corridor at night",
+        "generated": "a person runs on a corridor at night",
         "action_hit": false
       },
       {
@@ -1038,35 +1038,35 @@
         "clip": "kick/NTU_fight0153_kick_1.mp4",
         "category": "kick",
         "actual": "A man kicks another person in a room in dim light.",
-        "generated": "a man hits another person in a corridor in dim light",
+        "generated": "a man hits another person in a shop in dim light",
         "action_hit": false
       },
       {
         "clip": "kick/NTU_fight0994_kick_1.mp4",
         "category": "kick",
         "actual": "A man kicks another person in a shop indoors.",
-        "generated": "a man grabs an object in a shop indoors",
+        "generated": "a man brandishes a gun in a shop indoors",
         "action_hit": false
       },
       {
         "clip": "run/UCFCRIME_Arson017_run_1.mp4",
         "category": "run",
         "actual": "Two people run on a street in daylight.",
-        "generated": "a person walks on a street in daylight",
+        "generated": "a person walks on a sidewalk in daylight",
         "action_hit": false
       },
       {
         "clip": "grab/UCFCRIME_Burglary092_grab_1.mp4",
         "category": "grab",
         "actual": "A man grabs an object on a sidewalk at night.",
-        "generated": "a person walks on a sidewalk at night",
+        "generated": "a person runs across a parking lot at night",
         "action_hit": false
       },
       {
         "clip": "kick/UCFCRIME_Shooting036_kick_1.mp4",
         "category": "kick",
         "actual": "A man kicks another person in a shop indoors.",
-        "generated": "a man brandishes a gun in a store indoors",
+        "generated": "a man brandishes a gun in a shop indoors",
         "action_hit": false
       },
       {
@@ -1080,7 +1080,7 @@
         "clip": "sneak/UCFCRIME_Stealing037_sneak_1.mp4",
         "category": "sneak",
         "actual": "A person sneaks through a yard at night.",
-        "generated": "two people stand in a restaurant at night",
+        "generated": "a person walks in a parking lot at night",
         "action_hit": false
       },
       {
@@ -1101,36 +1101,36 @@
         "clip": "sneak/YOUTUBE_YouTubeCCTV015_sneak_1.mp4",
         "category": "sneak",
         "actual": "A person sneaks along a yard in daylight.",
-        "generated": "a person lies on the ground in a shop indoors",
-        "action_hit": false
+        "generated": "a person sneaks through a parking lot in daylight",
+        "action_hit": true
       },
       {
         "clip": "sneak/UCFCRIME_Robbery115_sneak_1.mp4",
         "category": "sneak",
         "actual": "A person sneaks through a shop in dim light.",
-        "generated": "a man brandishes a gun in a shop indoors",
+        "generated": "a person stands on a sidewalk in dim light",
         "action_hit": false
       }
     ]
   },
   "train": {
     "n": 156,
-    "action_accuracy": 0.8654,
-    "exact_match": 0.6923,
+    "action_accuracy": 0.9744,
+    "exact_match": 0.8526,
     "per_category": {
-      "fall": 0.923,
-      "grab": 0.857,
+      "fall": 1.0,
+      "grab": 1.0,
       "gun": 1.0,
-      "hit": 0.786,
-      "kick": 0.833,
-      "lying_down": 0.824,
-      "run": 1.0,
-      "sit": 0.636,
+      "hit": 1.0,
+      "kick": 1.0,
+      "lying_down": 0.941,
+      "run": 0.833,
+      "sit": 1.0,
       "sneak": 1.0,
       "stand": 0.833,
-      "struggle": 0.833,
-      "throw": 0.933,
-      "walk": 0.8
+      "struggle": 0.917,
+      "throw": 1.0,
+      "walk": 1.0
     },
     "records": [
       {
@@ -1158,14 +1158,14 @@
         "clip": "hit/NTU_fight0232_hit_1.mp4",
         "category": "hit",
         "actual": "Several people hit one another in a shop indoors.",
-        "generated": "several people hit one another in a shop indoors",
+        "generated": "several people hit another person in a shop indoors",
         "action_hit": true
       },
       {
         "clip": "hit/NTU_fight0206_hit_1.mp4",
         "category": "hit",
         "actual": "Several people hit each other in a shop in dim light.",
-        "generated": "several people hit each other in a shop indoors",
+        "generated": "several people hit each other in a shop in dim light",
         "action_hit": true
       },
       {
@@ -1221,7 +1221,7 @@
         "clip": "sneak/UCFCRIME_Burglary071_sneak_2.mp4",
         "category": "sneak",
         "actual": "A man sneaks and crouches in a shop indoors.",
-        "generated": "a person sneaks through a shop indoors",
+        "generated": "a man sneaks through a shop indoors",
         "action_hit": true
       },
       {
@@ -1235,7 +1235,7 @@
         "clip": "gun/UCFCRIME_Shooting005_gun_1.mp4",
         "category": "gun",
         "actual": "A person holds a gun in an alley at night.",
-        "generated": "a man holds a gun at an object in an alley at night",
+        "generated": "a person holds a gun in an alley at night",
         "action_hit": true
       },
       {
@@ -1263,8 +1263,8 @@
         "clip": "hit/NTU_fight0209_hit_1.mp4",
         "category": "hit",
         "actual": "A man hits another person in a store indoors.",
-        "generated": "several people struggle in a store indoors",
-        "action_hit": false
+        "generated": "a man hits another person in a store indoors",
+        "action_hit": true
       },
       {
         "clip": "struggle/NTU_fight0180_struggle_1.mp4",
@@ -1291,15 +1291,15 @@
         "clip": "sit/UCFCRIME_Assault004_sit_1.mp4",
         "category": "sit",
         "actual": "A man sits on a street at night.",
-        "generated": "a man throws an object on a street at night",
-        "action_hit": false
+        "generated": "a man sits on a street at night",
+        "action_hit": true
       },
       {
         "clip": "throw/NTU_fight0995_throw_1.mp4",
         "category": "throw",
         "actual": "A person throws an object in an office indoors.",
-        "generated": "several people sit in an office indoors",
-        "action_hit": false
+        "generated": "a person throws an object in an office indoors",
+        "action_hit": true
       },
       {
         "clip": "struggle/NTU_fight0055_struggle_1.mp4",
@@ -1326,7 +1326,7 @@
         "clip": "run/UCFCRIME_Burglary077_run_1.mp4",
         "category": "run",
         "actual": "A person runs through a store indoors.",
-        "generated": "a person runs through a store indoors",
+        "generated": "a person runs through a shop indoors",
         "action_hit": true
       },
       {
@@ -1340,7 +1340,7 @@
         "clip": "throw/NTU_fight0078_throw_1.mp4",
         "category": "throw",
         "actual": "A woman throws an object on a street in daylight.",
-        "generated": "a woman throws an object on a street in daylight",
+        "generated": "a man throws an object on a street in daylight",
         "action_hit": true
       },
       {
@@ -1361,8 +1361,8 @@
         "clip": "kick/NTU_fight0146_kick_1.mp4",
         "category": "kick",
         "actual": "Several people fight and kick each other in a shop indoors.",
-        "generated": "several people fight and each other in a shop indoors",
-        "action_hit": false
+        "generated": "several people fight and kick each other in a shop indoors",
+        "action_hit": true
       },
       {
         "clip": "sneak/UCFCRIME_Stealing100_sneak_2.mp4",
@@ -1382,7 +1382,7 @@
         "clip": "struggle/NTU_fight0136_struggle_2.mp4",
         "category": "struggle",
         "actual": "Several people struggle on a street in daylight.",
-        "generated": "several people struggle in a parking lot in daylight",
+        "generated": "several people struggle on a street in daylight",
         "action_hit": true
       },
       {
@@ -1396,7 +1396,7 @@
         "clip": "gun/UCFCRIME_Robbery145_gun_1.mp4",
         "category": "gun",
         "actual": "A man points a gun at several people in a shop indoors.",
-        "generated": "a man points a gun at a person in a shop indoors",
+        "generated": "a man points a gun in a shop indoors",
         "action_hit": true
       },
       {
@@ -1424,7 +1424,7 @@
         "clip": "hit/NTU_fight0050_hit_2.mp4",
         "category": "hit",
         "actual": "A man hits another person on a sidewalk in daylight.",
-        "generated": "a man hits another person in a shop in daylight",
+        "generated": "a man hits another person on a sidewalk in daylight",
         "action_hit": true
       },
       {
@@ -1466,7 +1466,7 @@
         "clip": "walk/UCFCRIME_Arrest029_walk_2.mp4",
         "category": "walk",
         "actual": "A woman walks in a lobby indoors while several people stand",
-        "generated": "a person walks in a lobby indoors while several people stand",
+        "generated": "a woman walks in a lobby indoors while several people stand",
         "action_hit": true
       },
       {
@@ -1529,7 +1529,7 @@
         "clip": "throw/NTU_fight0029_throw_3.mp4",
         "category": "throw",
         "actual": "A man throws an object at a woman on a street in daylight.",
-        "generated": "a man throws an object in a yard in daylight",
+        "generated": "a man throws an object on a street in daylight",
         "action_hit": true
       },
       {
@@ -1557,8 +1557,8 @@
         "clip": "hit/NTU_fight0172_hit_2.mp4",
         "category": "hit",
         "actual": "A man hits another person in a shop indoors.",
-        "generated": "a man points a gun in a shop indoors",
-        "action_hit": false
+        "generated": "a man hits another person in a shop indoors",
+        "action_hit": true
       },
       {
         "clip": "throw/UCFCRIME_Arson032_throw_1.mp4",
@@ -1585,8 +1585,8 @@
         "clip": "hit/NTU_fight0092_hit_1.mp4",
         "category": "hit",
         "actual": "Two men hit each other on a sidewalk at night.",
-        "generated": "two men struggle on a sidewalk at night",
-        "action_hit": false
+        "generated": "two men hit each other on a sidewalk at night",
+        "action_hit": true
       },
       {
         "clip": "fall/NTU_fight0146_fall_2.mp4",
@@ -1599,8 +1599,8 @@
         "clip": "kick/NTU_fight0209_kick_2.mp4",
         "category": "kick",
         "actual": "Several people fight and a man kicks another person in a store indoors.",
-        "generated": "several people struggle in a store indoors",
-        "action_hit": false
+        "generated": "several people fight and a man kicks another person in a store indoors",
+        "action_hit": true
       },
       {
         "clip": "grab/UCFCRIME_Burglary093_grab_1.mp4",
@@ -1620,8 +1620,8 @@
         "clip": "struggle/LIVELEAK_LiveLeak3_struggle_1.mp4",
         "category": "struggle",
         "actual": "Two men struggle in a lobby indoors while several people stand",
-        "generated": "two men stand in a lobby indoors while several people stand stand stand",
-        "action_hit": false
+        "generated": "two men struggle in a lobby indoors while several people stand",
+        "action_hit": true
       },
       {
         "clip": "hit/NTU_fight0232_hit_2.mp4",
@@ -1641,7 +1641,7 @@
         "clip": "run/NTU_fight0160_run_1.mp4",
         "category": "run",
         "actual": "A person runs past a shop on a sidewalk at night.",
-        "generated": "a person runs on a shop at night",
+        "generated": "a person runs past a person on a sidewalk at night",
         "action_hit": true
       },
       {
@@ -1662,14 +1662,14 @@
         "clip": "kick/UCFCRIME_Assault001_kick_1.mp4",
         "category": "kick",
         "actual": "A man kicks a person lying on a sidewalk at night.",
-        "generated": "a man kicks a person lying on a sidewalk at night",
+        "generated": "a man kicks a person on a sidewalk at night",
         "action_hit": true
       },
       {
         "clip": "hit/NTU_fight0008_hit_1.mp4",
         "category": "hit",
         "actual": "A man hits another person in a bar indoors.",
-        "generated": "a man hits another person in a bar in dim light",
+        "generated": "a man hits another person in a bar indoors",
         "action_hit": true
       },
       {
@@ -1683,8 +1683,8 @@
         "clip": "grab/UCFCRIME_Robbery019_grab_2.mp4",
         "category": "grab",
         "actual": "Several people grab things in a shop indoors.",
-        "generated": "a man brandishes a gun in a shop indoors",
-        "action_hit": false
+        "generated": "several people grab things in a shop indoors",
+        "action_hit": true
       },
       {
         "clip": "sneak/UCFCRIME_Burglary035_sneak_1.mp4",
@@ -1697,7 +1697,7 @@
         "clip": "sneak/UCFCRIME_Stealing084_sneak_4.mp4",
         "category": "sneak",
         "actual": "Two people sneak in an alley at night.",
-        "generated": "two people sneak through an alley at night",
+        "generated": "two people sneak in a narrow alley at night",
         "action_hit": true
       },
       {
@@ -1760,8 +1760,8 @@
         "clip": "lying_down/UCFCRIME_Fighting027_lying_down_1.mp4",
         "category": "lying_down",
         "actual": "A person lies on a street at night.",
-        "generated": "several people run on a street at night",
-        "action_hit": false
+        "generated": "a person lies on a street at night",
+        "action_hit": true
       },
       {
         "clip": "sit/NTU_fight0188_sit_1.mp4",
@@ -1788,8 +1788,8 @@
         "clip": "lying_down/NTU_fight0097_lying_down_1.mp4",
         "category": "lying_down",
         "actual": "A man lies still in a room indoors.",
-        "generated": "a man sits in a room indoors",
-        "action_hit": false
+        "generated": "a man lies still in a room indoors",
+        "action_hit": true
       },
       {
         "clip": "throw/YOUTUBE_YouTubeCCTV079_throw_3.mp4",
@@ -1802,8 +1802,8 @@
         "clip": "fall/UCFCRIME_Robbery024_fall_1.mp4",
         "category": "fall",
         "actual": "A person falls to the ground in a lobby indoors.",
-        "generated": "a man brandishes a gun in a lobby indoors",
-        "action_hit": false
+        "generated": "a person falls to the ground in a lobby indoors",
+        "action_hit": true
       },
       {
         "clip": "kick/YOUTUBE_YouTubeCCTV005_kick_1.mp4",
@@ -1830,8 +1830,8 @@
         "clip": "walk/UCFCRIME_Arrest046_walk_1.mp4",
         "category": "walk",
         "actual": "Two men walk across an office indoors.",
-        "generated": "two men stand in an office indoors",
-        "action_hit": false
+        "generated": "two men walk across an office indoors",
+        "action_hit": true
       },
       {
         "clip": "fall/NTU_fight0114_fall_1.mp4",
@@ -1844,8 +1844,8 @@
         "clip": "sit/NTU_fight0226_sit_1.mp4",
         "category": "sit",
         "actual": "A person sits in a shop in daylight.",
-        "generated": "a person runs through a shop indoors",
-        "action_hit": false
+        "generated": "a person sits in a shop in daylight",
+        "action_hit": true
       },
       {
         "clip": "sit/UCFCRIME_Robbery126_sit_1.mp4",
@@ -1900,8 +1900,8 @@
         "clip": "sit/UCFCRIME_Fighting049_sit_2.mp4",
         "category": "sit",
         "actual": "Two men sit in a station indoors in dim light.",
-        "generated": "a man brandishes a gun in a station indoors",
-        "action_hit": false
+        "generated": "two men sit in a station indoors in dim light",
+        "action_hit": true
       },
       {
         "clip": "stand/UCFCRIME_Arson042_stand_1.mp4",
@@ -1928,7 +1928,7 @@
         "clip": "throw/UCFCRIME_Vandalism033_throw_3.mp4",
         "category": "throw",
         "actual": "Several people throw objects in a yard in daylight.",
-        "generated": "a person throws an object in a yard in daylight",
+        "generated": "several people throw objects in a yard in daylight",
         "action_hit": true
       },
       {
@@ -1949,7 +1949,7 @@
         "clip": "fall/NTU_fight0036_fall_1.mp4",
         "category": "fall",
         "actual": "Two people fall to the ground in a corridor at night.",
-        "generated": "a person falls to the ground in a corridor at night",
+        "generated": "two people fall to the ground in a corridor at night",
         "action_hit": true
       },
       {
@@ -2026,8 +2026,8 @@
         "clip": "sit/NTU_fight0990_sit_1.mp4",
         "category": "sit",
         "actual": "Two people sit in a room indoors.",
-        "generated": "a person falls to the ground in a room indoors",
-        "action_hit": false
+        "generated": "two people sit in a room indoors",
+        "action_hit": true
       },
       {
         "clip": "grab/UCFCRIME_Fighting050_grab_2.mp4",
@@ -2040,15 +2040,15 @@
         "clip": "struggle/NTU_fight0042_struggle_2.mp4",
         "category": "struggle",
         "actual": "Several people struggle on the floor in an office indoors.",
-        "generated": "several people struggle in an office indoors",
+        "generated": "several people struggle on the floor in an office indoors",
         "action_hit": true
       },
       {
         "clip": "run/UCFCRIME_Burglary063_run_1.mp4",
         "category": "run",
         "actual": "A man runs on a sidewalk in daylight.",
-        "generated": "a man runs on a sidewalk in daylight",
-        "action_hit": true
+        "generated": "a man stands on a sidewalk in daylight",
+        "action_hit": false
       },
       {
         "clip": "throw/UCFCRIME_Vandalism027_throw_1.mp4",
@@ -2110,21 +2110,21 @@
         "clip": "lying_down/UCFCRIME_Fighting011_lying_down_1.mp4",
         "category": "lying_down",
         "actual": "A person lies on the ground in a corridor indoors.",
-        "generated": "a person lies on the ground in a room indoors",
+        "generated": "a person lies on the ground in a corridor indoors",
         "action_hit": true
       },
       {
         "clip": "walk/UCFCRIME_Arrest001_walk_2.mp4",
         "category": "walk",
         "actual": "A person walks through an office indoors.",
-        "generated": "several people stand through an office indoors",
-        "action_hit": false
+        "generated": "a person walks through an office indoors",
+        "action_hit": true
       },
       {
         "clip": "lying_down/NTU_fight0114_lying_down_1.mp4",
         "category": "lying_down",
         "actual": "A person lies on the floor in a room indoors.",
-        "generated": "a person lies on the ground in a room indoors",
+        "generated": "a person lies on the ground in a corridor indoors",
         "action_hit": true
       },
       {
@@ -2166,7 +2166,7 @@
         "clip": "grab/UCFCRIME_Burglary048_grab_1.mp4",
         "category": "grab",
         "actual": "Two people grab an object in a room in dim light.",
-        "generated": "two people grab an object in an alley in dim light",
+        "generated": "two people grab an object in an office in dim light",
         "action_hit": true
       },
       {
@@ -2180,14 +2180,14 @@
         "clip": "throw/UCFCRIME_Vandalism034_throw_1.mp4",
         "category": "throw",
         "actual": "Two people throw an object in a lobby at night.",
-        "generated": "two people throw objects in a lobby at night",
+        "generated": "two people throw an object in a lobby at night",
         "action_hit": true
       },
       {
         "clip": "struggle/NTU_fight0042_struggle_1.mp4",
         "category": "struggle",
         "actual": "Two men struggle in an office indoors.",
-        "generated": "several people struggle in an office indoors",
+        "generated": "two men struggle in an office indoors",
         "action_hit": true
       },
       {
@@ -2208,8 +2208,8 @@
         "clip": "grab/UCFCRIME_Robbery019_grab_1.mp4",
         "category": "grab",
         "actual": "A man grabs an object in a shop indoors.",
-        "generated": "a man brandishes a gun in a shop indoors",
-        "action_hit": false
+        "generated": "a man grabs an object in a shop indoors",
+        "action_hit": true
       },
       {
         "clip": "gun/UCFCRIME_Arrest041_gun_1.mp4",

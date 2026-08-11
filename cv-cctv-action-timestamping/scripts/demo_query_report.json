@@ -1,0 +1,474 @@
+{
+  "demo_video": "demo_concat.mp4",
+  "duration": 49.0,
+  "n_segments": 24,
+  "caption_seconds": 14.6,
+  "threshold": 0.3,
+  "top1": 1,
+  "top3": 7,
+  "n_queries": 13,
+  "top1_rate": 0.0769,
+  "top3_rate": 0.5385,
+  "working_queries": [
+    "somebody running"
+  ],
+  "segments": [
+    {
+      "text": "a man kicks another person on a sidewalk in daylight",
+      "start": 0.0,
+      "end": 4.0
+    },
+    {
+      "text": "a person falls to the ground in a shop indoors",
+      "start": 2.0,
+      "end": 6.0
+    },
+    {
+      "text": "a man brandishes a gun in a yard indoors",
+      "start": 4.0,
+      "end": 8.0
+    },
+    {
+      "text": "a person kicks an object in a shop indoors",
+      "start": 6.0,
+      "end": 10.0
+    },
+    {
+      "text": "a person runs through a yard in daylight",
+      "start": 8.0,
+      "end": 12.0
+    },
+    {
+      "text": "a person runs in a yard in daylight",
+      "start": 10.0,
+      "end": 14.0
+    },
+    {
+      "text": "a person throws an object in a yard at night",
+      "start": 12.0,
+      "end": 16.0
+    },
+    {
+      "text": "a man throws an object in a yard in daylight",
+      "start": 14.0,
+      "end": 18.0
+    },
+    {
+      "text": "a person walks in a shop indoors",
+      "start": 16.0,
+      "end": 20.0
+    },
+    {
+      "text": "a person falls to the ground in a shop at night",
+      "start": 18.0,
+      "end": 22.0
+    },
+    {
+      "text": "a man falls to the ground in a shop in daylight",
+      "start": 20.0,
+      "end": 24.0
+    },
+    {
+      "text": "a man throws an object in a yard in dim light",
+      "start": 22.0,
+      "end": 26.0
+    },
+    {
+      "text": "a person throws an object in a yard in daylight",
+      "start": 24.0,
+      "end": 28.0
+    },
+    {
+      "text": "a person kicks something in a yard in dim light",
+      "start": 26.0,
+      "end": 30.0
+    },
+    {
+      "text": "a man grabs an object in a shop indoors",
+      "start": 28.0,
+      "end": 32.0
+    },
+    {
+      "text": "a man sits down in a shop indoors",
+      "start": 30.0,
+      "end": 34.0
+    },
+    {
+      "text": "a person sits in a shop indoors",
+      "start": 32.0,
+      "end": 36.0
+    },
+    {
+      "text": "several people sit in a shop indoors",
+      "start": 34.0,
+      "end": 38.0
+    },
+    {
+      "text": "a man brandishes a gun in a shop indoors",
+      "start": 36.0,
+      "end": 40.0
+    },
+    {
+      "text": "a man brandishes a gun in a shop indoors",
+      "start": 38.0,
+      "end": 42.0
+    },
+    {
+      "text": "a person grabs an object in a room indoors",
+      "start": 40.0,
+      "end": 44.0
+    },
+    {
+      "text": "a man grabs an object in an office indoors",
+      "start": 42.0,
+      "end": 46.0
+    },
+    {
+      "text": "a person falls to the ground in a street at night",
+      "start": 44.0,
+      "end": 48.0
+    },
+    {
+      "text": "a person falls to the ground on a street at night",
+      "start": 45.0,
+      "end": 49.0
+    }
+  ],
+  "rows": [
+    {
+      "category": "fall",
+      "query": "someone falls to the ground",
+      "expected": [
+        4.0,
+        8.0
+      ],
+      "top1_hit": false,
+      "top3_hit": true,
+      "results": [
+        {
+          "start": 18.0,
+          "end": 28.0,
+          "score": 0.8172,
+          "text": "a person falls to the ground in a shop at night"
+        },
+        {
+          "start": 44.0,
+          "end": 49.0,
+          "score": 0.8116,
+          "text": "a person falls to the ground in a street at night"
+        },
+        {
+          "start": 0.0,
+          "end": 6.0,
+          "score": 0.6947,
+          "text": "a person falls to the ground in a shop indoors"
+        }
+      ]
+    },
+    {
+      "category": "grab",
+      "query": "a person grabbing something",
+      "expected": [
+        30.0,
+        34.0
+      ],
+      "top1_hit": false,
+      "top3_hit": true,
+      "results": [
+        {
+          "start": 40.0,
+          "end": 46.0,
+          "score": 0.5909,
+          "text": "a person grabs an object in a room indoors"
+        },
+        {
+          "start": 24.0,
+          "end": 32.0,
+          "score": 0.5289,
+          "text": "a man grabs an object in a shop indoors"
+        },
+        {
+          "start": 12.0,
+          "end": 16.0,
+          "score": 0.3862,
+          "text": "a person throws an object in a yard at night"
+        }
+      ]
+    },
+    {
+      "category": "gun",
+      "query": "a person with a gun",
+      "expected": [
+        8.0,
+        12.0
+      ],
+      "top1_hit": false,
+      "top3_hit": false,
+      "results": [
+        {
+          "start": 4.0,
+          "end": 8.0,
+          "score": 0.4103,
+          "text": "a man brandishes a gun in a yard indoors"
+        },
+        {
+          "start": 36.0,
+          "end": 44.0,
+          "score": 0.3949,
+          "text": "a man brandishes a gun in a shop indoors"
+        }
+      ]
+    },
+    {
+      "category": "hit",
+      "query": "someone hitting another person",
+      "expected": [
+        34.0,
+        41.0
+      ],
+      "top1_hit": false,
+      "top3_hit": false,
+      "results": [
+        {
+          "start": 0.0,
+          "end": 4.0,
+          "score": 0.384,
+          "text": "a man kicks another person on a sidewalk in daylight"
+        },
+        {
+          "start": 12.0,
+          "end": 16.0,
+          "score": 0.3669,
+          "text": "a person throws an object in a yard at night"
+        },
+        {
+          "start": 24.0,
+          "end": 28.0,
+          "score": 0.3392,
+          "text": "a person throws an object in a yard in daylight"
+        }
+      ]
+    },
+    {
+      "category": "kick",
+      "query": "a person kicking someone",
+      "expected": [
+        19.0,
+        21.0
+      ],
+      "top1_hit": false,
+      "top3_hit": false,
+      "results": [
+        {
+          "start": 0.0,
+          "end": 4.0,
+          "score": 0.4751,
+          "text": "a man kicks another person on a sidewalk in daylight"
+        },
+        {
+          "start": 6.0,
+          "end": 10.0,
+          "score": 0.4561,
+          "text": "a person kicks an object in a shop indoors"
+        },
+        {
+          "start": 26.0,
+          "end": 30.0,
+          "score": 0.3572,
+          "text": "a person kicks something in a yard in dim light"
+        }
+      ]
+    },
+    {
+      "category": "lying_down",
+      "query": "somebody lying on the floor",
+      "expected": [
+        46.0,
+        49.0
+      ],
+      "top1_hit": false,
+      "top3_hit": true,
+      "results": [
+        {
+          "start": 2.0,
+          "end": 6.0,
+          "score": 0.3407,
+          "text": "a person falls to the ground in a shop indoors"
+        },
+        {
+          "start": 32.0,
+          "end": 36.0,
+          "score": 0.3317,
+          "text": "a person sits in a shop indoors"
+        },
+        {
+          "start": 40.0,
+          "end": 49.0,
+          "score": 0.3279,
+          "text": "a person grabs an object in a room indoors"
+        }
+      ]
+    },
+    {
+      "category": "run",
+      "query": "somebody running",
+      "expected": [
+        12.0,
+        15.0
+      ],
+      "top1_hit": true,
+      "top3_hit": true,
+      "results": [
+        {
+          "start": 8.0,
+          "end": 14.0,
+          "score": 0.4648,
+          "text": "a person runs in a yard in daylight"
+        }
+      ]
+    },
+    {
+      "category": "sit",
+      "query": "someone sitting down",
+      "expected": [
+        15.0,
+        19.0
+      ],
+      "top1_hit": false,
+      "top3_hit": true,
+      "results": [
+        {
+          "start": 30.0,
+          "end": 38.0,
+          "score": 0.5494,
+          "text": "a man sits down in a shop indoors"
+        },
+        {
+          "start": 18.0,
+          "end": 22.0,
+          "score": 0.353,
+          "text": "a person falls to the ground in a shop at night"
+        },
+        {
+          "start": 2.0,
+          "end": 6.0,
+          "score": 0.341,
+          "text": "a person falls to the ground in a shop indoors"
+        }
+      ]
+    },
+    {
+      "category": "sneak",
+      "query": "a person sneaking around",
+      "expected": [
+        26.0,
+        30.0
+      ],
+      "top1_hit": false,
+      "top3_hit": false,
+      "results": [
+        {
+          "start": 16.0,
+          "end": 20.0,
+          "score": 0.4237,
+          "text": "a person walks in a shop indoors"
+        },
+        {
+          "start": 0.0,
+          "end": 10.0,
+          "score": 0.3367,
+          "text": "a man kicks another person on a sidewalk in daylight"
+        },
+        {
+          "start": 40.0,
+          "end": 44.0,
+          "score": 0.3211,
+          "text": "a person grabs an object in a room indoors"
+        }
+      ]
+    },
+    {
+      "category": "stand",
+      "query": "people standing still",
+      "expected": [
+        41.0,
+        46.0
+      ],
+      "top1_hit": false,
+      "top3_hit": false,
+      "results": [
+        {
+          "start": 0.0,
+          "end": 6.0,
+          "score": 0.3828,
+          "text": "a man kicks another person on a sidewalk in daylight"
+        }
+      ]
+    },
+    {
+      "category": "struggle",
+      "query": "people fighting",
+      "expected": [
+        21.0,
+        24.0
+      ],
+      "top1_hit": false,
+      "top3_hit": false,
+      "results": []
+    },
+    {
+      "category": "throw",
+      "query": "someone throwing something",
+      "expected": [
+        24.0,
+        26.0
+      ],
+      "top1_hit": false,
+      "top3_hit": true,
+      "results": [
+        {
+          "start": 12.0,
+          "end": 18.0,
+          "score": 0.6528,
+          "text": "a person throws an object in a yard at night"
+        },
+        {
+          "start": 22.0,
+          "end": 32.0,
+          "score": 0.5616,
+          "text": "a person throws an object in a yard in daylight"
+        },
+        {
+          "start": 40.0,
+          "end": 46.0,
+          "score": 0.4216,
+          "text": "a person grabs an object in a room indoors"
+        }
+      ]
+    },
+    {
+      "category": "walk",
+      "query": "a person walking",
+      "expected": [
+        0.0,
+        4.0
+      ],
+      "top1_hit": false,
+      "top3_hit": true,
+      "results": [
+        {
+          "start": 16.0,
+          "end": 20.0,
+          "score": 0.62,
+          "text": "a person walks in a shop indoors"
+        },
+        {
+          "start": 0.0,
+          "end": 4.0,
+          "score": 0.429,
+          "text": "a man kicks another person on a sidewalk in daylight"
+        }
+      ]
+    }
+  ]
+}

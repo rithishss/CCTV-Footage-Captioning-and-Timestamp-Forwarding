@@ -71,23 +71,22 @@ PATIENCE = 12
 PAD, OOV, START, END = "<pad>", "<unk>", "start", "end"
 
 
-class _IdentityProjection:
+def _identity_projection():
     """Stands in for TruncatedSVD when --no-svd is used.
 
     Keeps the four-artifact contract intact: inference always calls
     svd.transform(...) then scaler.transform(...), so a no-op projection means
     lstm_captioning.py needs no special case.
+
+    This is sklearn's own FunctionTransformer rather than a custom class on
+    purpose. A hand-rolled class gets pickled as `__main__.<Name>`, which then
+    fails to unpickle from any *other* entry point -- including the Streamlit
+    app. FunctionTransformer lives in sklearn, so it loads anywhere sklearn is
+    installed.
     """
+    from sklearn.preprocessing import FunctionTransformer
 
-    def __init__(self, dim: int):
-        self.n_components = dim
-        self.explained_variance_ratio_ = np.ones(1, dtype="float32")
-
-    def transform(self, X):
-        return X
-
-    def fit_transform(self, X, y=None):
-        return X
+    return FunctionTransformer(feature_names_out="one-to-one")
 
 
 # --------------------------------------------------------------------------- #
@@ -138,16 +137,29 @@ def build_model(vocab_size: int, timesteps: int, feat_dim: int):
     video = layers.Input(shape=(timesteps, feat_dim), name="video")
     tokens = layers.Input(shape=(MAX_LENGTH - 1,), dtype="int32", name="caption")
 
-    enc = layers.Bidirectional(
-        layers.LSTM(ENC_UNITS, return_sequences=True, dropout=DROPOUT), name="encoder"
-    )(video)  # -> (T, 2*ENC_UNITS)
+    # return_state so the decoder can be *initialised* from the video, not just
+    # attend to it afterwards. Previously the decoder LSTM started from a zero
+    # state and video only reached it through Attention applied AFTER the
+    # recurrence, so video never entered the decoder's dynamics at all -- the
+    # most likely reason it could not exploit better features.
+    enc_seq, f_h, f_c, b_h, b_c = layers.Bidirectional(
+        layers.LSTM(ENC_UNITS, return_sequences=True, return_state=True, dropout=DROPOUT),
+        name="encoder",
+    )(video)  # enc_seq -> (T, 2*ENC_UNITS)
+
+    # Concatenating the forward and backward states gives exactly DEC_UNITS
+    # (= 2 * ENC_UNITS), so it drops straight into the decoder's initial state.
+    state_h = layers.Concatenate(name="state_h")([f_h, b_h])
+    state_c = layers.Concatenate(name="state_c")([f_c, b_c])
 
     emb = layers.Embedding(vocab_size, EMBED_DIM, mask_zero=False, name="embedding")(tokens)
-    dec = layers.LSTM(DEC_UNITS, return_sequences=True, dropout=DROPOUT, name="decoder")(emb)
+    dec = layers.LSTM(DEC_UNITS, return_sequences=True, dropout=DROPOUT, name="decoder")(
+        emb, initial_state=[state_h, state_c]
+    )
 
     # keras.layers.Attention requires query and value to share a last dim,
     # which is why DEC_UNITS == 2 * ENC_UNITS.
-    ctx = layers.Attention(name="attention")([dec, enc])
+    ctx = layers.Attention(name="attention")([dec, enc_seq])
     merged = layers.Concatenate(name="concat")([dec, ctx])
     merged = layers.Dropout(DROPOUT)(merged)
     out = layers.Dense(vocab_size, activation="softmax", name="output")(merged)
@@ -264,7 +276,7 @@ def main() -> int:
         # scaler.transform. With a compact backbone the projection may simply
         # not be needed, which is what --no-svd tests.
         print(f"\nSKIPPING SVD (--no-svd): scaling raw {feat_dim}-d features", flush=True)
-        svd = _IdentityProjection(feat_dim)
+        svd = _identity_projection().fit(flat[:1])
         reduced = flat
         n_out = feat_dim
         report["svd"] = {"components": None, "skipped": True, "raw_dim": feat_dim}

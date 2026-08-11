@@ -4,14 +4,15 @@
   "shape": [
     780,
     8,
-    768
+    1536
   ],
   "dtype": "float32",
   "frames_per_clip": 16,
   "temporal_out": 8,
   "hidden": 768,
-  "pooling": "mean over the 196 spatial patches, temporal axis kept",
-  "extraction_seconds": 453.3,
+  "pooled_dim": 1536,
+  "pooling": "mean+std over the 196 spatial patches, temporal axis kept",
+  "extraction_seconds": 392.1,
   "failed": [],
   "clips": [
     "fall/NTU_fight0003_fall_1.mp4",

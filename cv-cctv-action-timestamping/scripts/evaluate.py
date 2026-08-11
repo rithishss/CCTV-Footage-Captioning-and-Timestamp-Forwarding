@@ -60,11 +60,6 @@ def main() -> int:
     import keras
     import train as T  # reuse greedy_decode / tokenize
 
-    # --no-svd pickles a train._IdentityProjection while train.py is __main__,
-    # so unpickling it here needs the name present on this module's __main__.
-    import __main__
-    __main__._IdentityProjection = T._IdentityProjection
-
     tok = json.loads((args.artifacts / "tokenizer.json").read_text())
     T.MAX_LENGTH = tok["max_length"]
     model = keras.models.load_model(args.artifacts / "lstm_model.keras", compile=False)
