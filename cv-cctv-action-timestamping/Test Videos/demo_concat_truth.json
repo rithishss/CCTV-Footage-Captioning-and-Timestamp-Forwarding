@@ -1,0 +1,101 @@
+{
+  "video": "demo_concat.mp4",
+  "fps": 30.0,
+  "width": 640,
+  "height": 360,
+  "duration": 49.0,
+  "n_segments": 13,
+  "segments": [
+    {
+      "category": "walk",
+      "source_clip": "walk/UCFCRIME_Shooting028_walk_1.mp4",
+      "start": 0.0,
+      "end": 4.0,
+      "was_in_training_set": false
+    },
+    {
+      "category": "fall",
+      "source_clip": "fall/YOUTUBE_YouTubeCCTV001_fall_50.mp4",
+      "start": 4.0,
+      "end": 8.0,
+      "was_in_training_set": false
+    },
+    {
+      "category": "gun",
+      "source_clip": "gun/YOUTUBE_YouTubeCCTV142_gun_2.mp4",
+      "start": 8.0,
+      "end": 12.0,
+      "was_in_training_set": false
+    },
+    {
+      "category": "run",
+      "source_clip": "run/YOUTUBE_YouTubeCCTV004_run_6.mp4",
+      "start": 12.0,
+      "end": 15.0,
+      "was_in_training_set": false
+    },
+    {
+      "category": "sit",
+      "source_clip": "sit/YOUTUBE_YouTubeCCTV017_sit_2.mp4",
+      "start": 15.0,
+      "end": 19.0,
+      "was_in_training_set": false
+    },
+    {
+      "category": "kick",
+      "source_clip": "kick/YOUTUBE_YouTubeCCTV225_kick_1.mp4",
+      "start": 19.0,
+      "end": 21.0,
+      "was_in_training_set": false
+    },
+    {
+      "category": "struggle",
+      "source_clip": "struggle/UCFCRIME_Shooting036_struggle_1.mp4",
+      "start": 21.0,
+      "end": 24.0,
+      "was_in_training_set": false
+    },
+    {
+      "category": "throw",
+      "source_clip": "throw/YOUTUBE_YouTubeCCTV263_throw_2.mp4",
+      "start": 24.0,
+      "end": 26.0,
+      "was_in_training_set": false
+    },
+    {
+      "category": "sneak",
+      "source_clip": "sneak/YOUTUBE_YouTubeCCTV283_sneak_1.mp4",
+      "start": 26.0,
+      "end": 30.0,
+      "was_in_training_set": false
+    },
+    {
+      "category": "grab",
+      "source_clip": "grab/UCFCRIME_Shoplifting001_grab_2.mp4",
+      "start": 30.0,
+      "end": 34.0,
+      "was_in_training_set": false
+    },
+    {
+      "category": "hit",
+      "source_clip": "hit/UCFCRIME_Fighting019_hit_1.mp4",
+      "start": 34.0,
+      "end": 41.0,
+      "was_in_training_set": false
+    },
+    {
+      "category": "stand",
+      "source_clip": "stand/UCFCRIME_Shooting048_stand_1.mp4",
+      "start": 41.0,
+      "end": 46.0,
+      "was_in_training_set": false
+    },
+    {
+      "category": "lying_down",
+      "source_clip": "lying_down/YOUTUBE_YouTubeCCTV039_lying_down_1.mp4",
+      "start": 46.0,
+      "end": 49.0,
+      "was_in_training_set": false
+    }
+  ]
+}
