@@ -172,37 +172,4 @@ lstm_model.keras  tokenizer.json  scaler.pkl  svd.pkl   the trained artifacts
 
 ---
 
-## Corrections to the original README
-
-The previous version of this README described a pipeline the code did not
-implement. For the record:
-
-- It claimed **Zero-DCE** for image enhancement. Zero-DCE was never used — the
-  function was named `apply_zerodce` but its body is CLAHE, and the `ZeroDCE`
-  class has no trained weights plus two maths bugs (its spatial-consistency
-  kernels are shaped `(1,3,1,3)` where `conv2d` needs `(3,3,1,1)`, and its
-  total-variation loss subtracts mismatched slices). The current pipeline uses
-  neither: VideoMAE was pretrained on ordinary video and a contrast transform it
-  never saw would push inputs off-distribution.
-- It claimed **ResNet-50**. The code used **VGG16**; it now uses VideoMAE.
-- It cited **2,600 clips** (200 × 13). The dataset actually contains **2,300** —
-  `kick`, `sneak` and `throw` have 100 each, not 200.
-- It reported **~98% training / ~61% validation** accuracy. Those figures are
-  reproducible but misleading: a model hitting them names the correct action
-  only **11.5%** of the time, barely above the 7.7% chance baseline. Token-level
-  accuracy is dominated by function words and setting boilerplate, which is why
-  this README leads with action accuracy instead.
-
----
-
-## Credits
-
-original pipeline and architecture.
-
-The trained artifacts from that work were never committed and are unrecoverable.
-This rebuild, by **Rithish S**, regenerated the caption set from scratch,
-retrained the model, built the temporal segmentation layer the original never
-had, replaced the feature backbone, and fixed the inference path so captioning
-and search actually connect.
-
 Built by Rithish S · [github.com/rithishss](https://github.com/rithishss)
