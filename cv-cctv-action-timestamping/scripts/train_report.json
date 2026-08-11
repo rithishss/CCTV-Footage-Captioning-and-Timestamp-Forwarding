@@ -3,9 +3,9 @@
   "timesteps": 16,
   "raw_feature_dim": 25120,
   "svd": {
-    "components": 1500,
-    "explained_variance_ratio": 0.9347240328788757,
-    "fit_seconds": 16.7
+    "components": 256,
+    "explained_variance_ratio": 0.7032468914985657,
+    "fit_seconds": 3.8
   },
   "tokenizer": {
     "vocab_size": 128,
@@ -35,45 +35,45 @@
     }
   },
   "training": {
-    "epochs_run": 34,
-    "best_epoch": 22,
-    "train_loss": 0.08570797741413116,
-    "val_loss": 1.2298998832702637,
-    "train_acc": 0.9877423048019409,
-    "val_acc": 0.6275050640106201,
-    "train_seconds": 28.2,
-    "params": 2144384
+    "epochs_run": 30,
+    "best_epoch": 18,
+    "train_loss": 0.35659047961235046,
+    "val_loss": 0.8750846982002258,
+    "train_acc": 0.9003793001174927,
+    "val_acc": 0.7470511794090271,
+    "train_seconds": 20.3,
+    "params": 870528
   },
   "samples": [
     {
       "clip": "run/UCFCRIME_Assault014_run_1.mp4",
       "category": "run",
       "actual": "A person runs on a street in daylight.",
-      "generated": "a person lies on the ground in a shop indoors"
+      "generated": "two men stand in a parking lot in daylight"
     },
     {
       "clip": "hit/NTU_fight0232_hit_4.mp4",
       "category": "hit",
       "actual": "Several people hit one another in a shop indoors.",
-      "generated": "a man grabs an object in a shop indoors"
+      "generated": "a man hits another person in a shop indoors"
     },
     {
       "clip": "stand/UCFCRIME_Abuse038_stand_1.mp4",
       "category": "stand",
       "actual": "Two people stand on a sidewalk at night.",
-      "generated": "a person lies on the ground in a shop indoors"
+      "generated": "a person runs on a sidewalk at night"
     },
     {
       "clip": "kick/NTU_fight0050_kick_1.mp4",
       "category": "kick",
       "actual": "Two men kick another person on a sidewalk in daylight.",
-      "generated": "a person lies on the ground in a shop indoors"
+      "generated": "a man hits another person on a sidewalk in daylight"
     },
     {
       "clip": "gun/UCFCRIME_Robbery078_gun_2.mp4",
       "category": "gun",
       "actual": "A person points a gun at a man in a shop indoors.",
-      "generated": "a man grabs an object in a shop indoors"
+      "generated": "a man points a gun in a shop indoors"
     }
   ]
 }

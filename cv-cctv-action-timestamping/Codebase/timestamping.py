@@ -1,64 +1,167 @@
-import os
-from io import StringIO
-from sentence_transformers import SentenceTransformer, util
-import torch
+"""
+Semantic search over captioned video segments.
 
-from feature_extraction import video_feature_extractor
-from lstm_captioning import lstm_captioning
+Rewrite of the original module, which could not work:
 
-def convert_timestamp_to_seconds(timestamp_str):
-    """Converts a 'HH:MM:SS.fff' timestamp string to total seconds."""
-    parts = timestamp_str.split(':')
-    seconds_parts = parts[2].split('.')
-    h = int(parts[0])
-    m = int(parts[1])
-    s = int(seconds_parts[0])
-    return h * 3600 + m * 60 + s
+* It received `dict[str, str]` from `lstm_captioning()` but iterated it as a list
+  of objects with `.text` and `.start` (a `youtube-transcript-api` shape) --
+  `AttributeError` on the first chunk.
+* It computed `total_seconds` and then **discarded it**, returning caption *text*
+  while `app.py` interpolated the return value into `seekTo({ts})` and `{ts}s`.
+  The function's contract and its only caller disagreed completely.
+* It rebuilt the SentenceTransformer on every call.
+* `convert_timestamp_to_seconds` parsed `'HH:MM:SS.fff'`, a format nothing in
+  this codebase ever produced. **It is deleted** -- a dead parser for a format
+  that does not exist only invites confusion later.
 
-def search_video_captions_semantically(video_captions, query, similarity_threshold=0.4):
+Now: search consumes `list[CaptionSegment]` and returns ranked `SearchHit`s,
+each carrying the segment (with real float seconds) and a similarity score.
+Callers get the top candidates, not a single take-it-or-leave-it answer -- an
+operator scanning footage wants to see the shortlist.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+
+import numpy as np
+
+from segmentation import CaptionSegment
+
+EMBED_MODEL = "minishlab/potion-base-8M"
+DEFAULT_THRESHOLD = 0.35
+DEFAULT_TOP_K = 5
+
+_EMBEDDER = None
+
+
+def get_embedder():
+    """Load the sentence embedder once per process.
+
+    `model2vec` static embeddings: numpy-only inference, no torch/transformers
+    stack, ~30 MB. Replaces `sentence-transformers`, which would have pulled a
+    second copy of torch into the deployment image.
     """
-    Downloads captions, performs a semantic search, and returns clickable timestamps.
+    global _EMBEDDER
+    if _EMBEDDER is None:
+        from model2vec import StaticModel
 
-    Args:
-        video_captions (str): The captions generated.
-        query (str): The search phrase or question.
-        similarity_threshold (float): How similar the text needs to be (0.0 to 1.0).
-                                      A good starting point is 0.5-0.6.
-    Returns:
-        list: A list of tuples, each containing (timestamp_link, caption_text).
+        _EMBEDDER = StaticModel.from_pretrained(EMBED_MODEL)
+    return _EMBEDDER
+
+
+@dataclass(frozen=True)
+class SearchHit:
+    """One matching segment and how well it matched."""
+
+    segment: CaptionSegment
+    score: float
+
+    # Convenience passthroughs so callers never have to reach inside.
+    @property
+    def text(self) -> str:
+        return self.segment.text
+
+    @property
+    def start(self) -> float:
+        return self.segment.start
+
+    @property
+    def end(self) -> float:
+        return self.segment.end
+
+    def __str__(self) -> str:
+        return f"[{self.start:.1f}s-{self.end:.1f}s] {self.score:.3f}  {self.text}"
+
+
+def _normalise(m: np.ndarray) -> np.ndarray:
+    return m / np.maximum(np.linalg.norm(m, axis=-1, keepdims=True), 1e-9)
+
+
+def merge_adjacent(hits: list[SearchHit], gap: float = 0.01) -> list[SearchHit]:
+    """Collapse overlapping/adjacent hits into one span.
+
+    Windows overlap by 50%, so a single real event usually matches two or three
+    consecutive windows. Without merging, the operator sees the same incident
+    three times. The merged span keeps the best-scoring caption.
     """
-    caption_content = video_captions
-    model = SentenceTransformer('all-MiniLM-L6-v2')
+    if not hits:
+        return []
+    ordered = sorted(hits, key=lambda h: h.segment.start)
+    merged: list[SearchHit] = []
+    cur = ordered[0]
+    for nxt in ordered[1:]:
+        if nxt.segment.start <= cur.segment.end + gap:
+            best = cur if cur.score >= nxt.score else nxt
+            cur = SearchHit(
+                segment=CaptionSegment(
+                    text=best.segment.text,
+                    start=cur.segment.start,
+                    end=max(cur.segment.end, nxt.segment.end),
+                ),
+                score=max(cur.score, nxt.score),
+            )
+        else:
+            merged.append(cur)
+            cur = nxt
+    merged.append(cur)
+    return sorted(merged, key=lambda h: h.score, reverse=True)
 
-    caption_chunks = []
-    chunk_size = 3
-    for i in range(0, len(video_captions), chunk_size):
-        chunk = video_captions[i:i+chunk_size]
-        text = " ".join(c.text.replace('\n', ' ').strip() for c in chunk)
-        start_time = chunk[0].start
-        caption_chunks.append({'text': text, 'start': start_time})
 
-    if not caption_chunks:
-        print("No caption found!.")
+def search_segments(
+    segments: list[CaptionSegment],
+    query: str,
+    similarity_threshold: float = DEFAULT_THRESHOLD,
+    top_k: int = DEFAULT_TOP_K,
+    merge: bool = True,
+) -> list[SearchHit]:
+    """Rank segments by semantic similarity to `query`.
+
+    Returns up to `top_k` hits above `similarity_threshold`, highest score
+    first. Empty list if nothing clears the bar.
+    """
+    if not segments or not query or not query.strip():
         return []
 
-    corpus_texts = [chunk['text'] for chunk in caption_chunks]
-    corpus_embeddings = model.encode(corpus_texts, convert_to_tensor=True)
-    query_embedding = model.encode(query, convert_to_tensor=True)
+    embedder = get_embedder()
+    corpus = _normalise(np.asarray(embedder.encode([s.text for s in segments])))
+    q = _normalise(np.asarray(embedder.encode([query]))[0])
+    scores = corpus @ q
 
-    cosine_scores = util.cos_sim(query_embedding, corpus_embeddings)[0]
-    found_timestamps = []
+    hits = [SearchHit(segment=s, score=float(sc))
+            for s, sc in zip(segments, scores) if sc > similarity_threshold]
+    if merge:
+        hits = merge_adjacent(hits)
+    hits.sort(key=lambda h: h.score, reverse=True)
+    return hits[:top_k]
 
-    for i, score in enumerate(cosine_scores):
-        if score > similarity_threshold:
-            caption_info = caption_chunks[i]
-            timestamp_str = caption_info['start']
-            total_seconds = convert_timestamp_to_seconds(timestamp_str)
 
-            found_timestamps.append(caption_info['text'])
+def streamlit_timestamping(
+    video,
+    search_word: str,
+    similarity_threshold: float = DEFAULT_THRESHOLD,
+    top_k: int = DEFAULT_TOP_K,
+) -> list[SearchHit]:
+    """Caption a video and search it in one call.
 
-    return found_timestamps
+    The model runs **once** here. The original `app.py` called the whole
+    pipeline twice per click -- two complete VGG16 passes over the footage for
+    one search.
 
-def streamlit_timestamping(video, search_word):
-    captions = lstm_captioning(video)
-    return search_video_captions_semantically(captions, search_word)
+    For interactive use, prefer calling `lstm_captioning.caption_video()` once
+    and then `search_segments()` per query, so re-searching the same video does
+    not re-run the model.
+    """
+    from lstm_captioning import lstm_captioning
+
+    segments = lstm_captioning(video)
+    return search_segments(segments, search_word, similarity_threshold, top_k)
+
+
+__all__ = [
+    "SearchHit",
+    "get_embedder",
+    "merge_adjacent",
+    "search_segments",
+    "streamlit_timestamping",
+]

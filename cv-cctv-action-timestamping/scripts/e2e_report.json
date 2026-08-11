@@ -1,0 +1,230 @@
+{
+  "feature_parity_max_error": 0.0,
+  "demo_video": "demo_concat.mp4",
+  "demo_duration": 49.0,
+  "n_segments": 24,
+  "caption_seconds": 10.6,
+  "segments": [
+    {
+      "text": "a person lies on the ground in a shop in",
+      "start": 0.0,
+      "end": 4.0
+    },
+    {
+      "text": "two people walk in a room in dim light",
+      "start": 2.0,
+      "end": 6.0
+    },
+    {
+      "text": "a person walks in a room in dim light",
+      "start": 4.0,
+      "end": 8.0
+    },
+    {
+      "text": "a person kicks another person in a yard in dim",
+      "start": 6.0,
+      "end": 10.0
+    },
+    {
+      "text": "a person kicks in a yard in daylight",
+      "start": 8.0,
+      "end": 12.0
+    },
+    {
+      "text": "a person walks in a yard in daylight",
+      "start": 10.0,
+      "end": 14.0
+    },
+    {
+      "text": "a person walks in a parking lot in daylight",
+      "start": 12.0,
+      "end": 16.0
+    },
+    {
+      "text": "a man kicks another person in a parking lot in",
+      "start": 14.0,
+      "end": 18.0
+    },
+    {
+      "text": "two people sit in a room indoors",
+      "start": 16.0,
+      "end": 20.0
+    },
+    {
+      "text": "a man brandishes a gun in a street in dim",
+      "start": 18.0,
+      "end": 22.0
+    },
+    {
+      "text": "a man brandishes a gun at a person in a",
+      "start": 20.0,
+      "end": 24.0
+    },
+    {
+      "text": "a man kicks another person in a lobby indoors",
+      "start": 22.0,
+      "end": 26.0
+    },
+    {
+      "text": "a person falls to the ground on a sidewalk in",
+      "start": 24.0,
+      "end": 28.0
+    },
+    {
+      "text": "a person falls to the ground in a shop in",
+      "start": 26.0,
+      "end": 30.0
+    },
+    {
+      "text": "a man brandishes a gun in a shop indoors",
+      "start": 28.0,
+      "end": 32.0
+    },
+    {
+      "text": "a man grabs a gun in a shop indoors",
+      "start": 30.0,
+      "end": 34.0
+    },
+    {
+      "text": "a person grabs a person in a shop indoors",
+      "start": 32.0,
+      "end": 36.0
+    },
+    {
+      "text": "a person lies on the ground in a shop indoors",
+      "start": 34.0,
+      "end": 38.0
+    },
+    {
+      "text": "a person lies on the ground in a shop indoors",
+      "start": 36.0,
+      "end": 40.0
+    },
+    {
+      "text": "a person sneaks on a sidewalk in daylight",
+      "start": 38.0,
+      "end": 42.0
+    },
+    {
+      "text": "a person sneaks through a shop indoors",
+      "start": 40.0,
+      "end": 44.0
+    },
+    {
+      "text": "a person sneaks through an office indoors",
+      "start": 42.0,
+      "end": 46.0
+    },
+    {
+      "text": "a person walks in a corridor in dim light",
+      "start": 44.0,
+      "end": 48.0
+    },
+    {
+      "text": "a person lies on a ground in a corridor in",
+      "start": 45.0,
+      "end": 49.0
+    }
+  ],
+  "queries": [
+    {
+      "query": "someone falls to the ground",
+      "expected_category": "fall",
+      "expected_range": [
+        4.0,
+        8.0
+      ],
+      "top_hit": {
+        "start": 24.0,
+        "end": 30.0,
+        "score": 0.8651,
+        "text": "a person falls to the ground in a shop in"
+      },
+      "correct": false,
+      "in_top3": false
+    },
+    {
+      "query": "a person with a gun",
+      "expected_category": "gun",
+      "expected_range": [
+        8.0,
+        12.0
+      ],
+      "top_hit": {
+        "start": 18.0,
+        "end": 24.0,
+        "score": 0.6643,
+        "text": "a man brandishes a gun at a person in a"
+      },
+      "correct": false,
+      "in_top3": false
+    },
+    {
+      "query": "people fighting",
+      "expected_category": "struggle",
+      "expected_range": [
+        21.0,
+        24.0
+      ],
+      "top_hit": {
+        "start": 22.0,
+        "end": 26.0,
+        "score": 0.3157,
+        "text": "a man kicks another person in a lobby indoors"
+      },
+      "correct": true,
+      "in_top3": true
+    },
+    {
+      "query": "somebody running",
+      "expected_category": "run",
+      "expected_range": [
+        12.0,
+        15.0
+      ],
+      "top_hit": {
+        "start": 32.0,
+        "end": 36.0,
+        "score": 0.3458,
+        "text": "a person grabs a person in a shop indoors"
+      },
+      "correct": false,
+      "in_top3": false
+    },
+    {
+      "query": "a person sneaking around",
+      "expected_category": "sneak",
+      "expected_range": [
+        26.0,
+        30.0
+      ],
+      "top_hit": {
+        "start": 32.0,
+        "end": 49.0,
+        "score": 0.5923,
+        "text": "a person sneaks through a shop indoors"
+      },
+      "correct": false,
+      "in_top3": false
+    },
+    {
+      "query": "someone sitting down",
+      "expected_category": "sit",
+      "expected_range": [
+        15.0,
+        19.0
+      ],
+      "top_hit": {
+        "start": 16.0,
+        "end": 20.0,
+        "score": 0.4558,
+        "text": "two people sit in a room indoors"
+      },
+      "correct": true,
+      "in_top3": true
+    }
+  ],
+  "top1_accuracy": 0.3333,
+  "top3_accuracy": 0.3333,
+  "failures": []
+}

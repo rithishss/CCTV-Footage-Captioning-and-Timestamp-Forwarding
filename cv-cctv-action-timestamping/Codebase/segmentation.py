@@ -42,6 +42,12 @@ from pathlib import Path
 import cv2
 import numpy as np
 
+# `prepare_frame` (resize -> CLAHE -> BGR->RGB, plus the 64x64 motion gray) is
+# imported rather than duplicated: inference frames must be prepared exactly as
+# training frames were, and two copies would eventually drift apart.
+# feature_extraction imports Keras lazily, so this stays a cheap import.
+from feature_extraction import prepare_frame
+
 WINDOW_SECONDS = 4.0
 OVERLAP = 0.5
 STRIDE_SECONDS = WINDOW_SECONDS * (1.0 - OVERLAP)  # 2.0 s
@@ -181,19 +187,6 @@ def plan_windows(
     return windows
 
 
-def enhance(frame_bgr: np.ndarray) -> np.ndarray:
-    """CLAHE contrast enhancement on the L channel.
-
-    Must stay byte-identical to the training-time implementation in
-    scripts/extract_features.py, or inference features will not match the
-    distribution the model was fitted on.
-    """
-    lab = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2LAB)
-    l, a, b = cv2.split(lab)
-    clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
-    return cv2.cvtColor(cv2.merge((clahe.apply(l), a, b)), cv2.COLOR_LAB2BGR)
-
-
 def read_window_frames(
     info: VideoInfo, windows: list[VideoWindow]
 ) -> dict[int, tuple[np.ndarray, np.ndarray]]:
@@ -221,12 +214,7 @@ def read_window_frames(
             if not ok:
                 break
             if pos in want:
-                small = cv2.resize(frame, (IMG_SIZE, IMG_SIZE), interpolation=cv2.INTER_AREA)
-                enhanced = enhance(small)
-                rgb = cv2.cvtColor(enhanced, cv2.COLOR_BGR2RGB)
-                gray = cv2.resize(cv2.cvtColor(enhanced, cv2.COLOR_BGR2GRAY),
-                                  (MOTION_SIZE, MOTION_SIZE), interpolation=cv2.INTER_AREA)
-                cache[pos] = (rgb, gray)
+                cache[pos] = prepare_frame(frame)
             pos += 1
     finally:
         cap.release()

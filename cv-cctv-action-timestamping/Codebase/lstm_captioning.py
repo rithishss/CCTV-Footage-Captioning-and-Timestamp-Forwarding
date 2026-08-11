@@ -1,111 +1,166 @@
-import os
+"""
+Caption a video as a list of time-stamped segments.
+
+Rewrite of the original module. The original could not run at all:
+
+* `lstm_captioning()` called `generate_caption_greedy(model, ..., tokenizer, ...)`
+  but `model` and `tokenizer` were locals of `loading_and_preprocessing()`,
+  which returned only `X_reduced` -- a guaranteed `NameError`.
+* `tf.keras.preprocessing.text.tokenizer_from_json` was removed in Keras 3, so
+  the module failed at import on any modern install.
+* `features_concatenator` shaped the whole video as ONE sample and returned a
+  dict `{"video_0": caption}`, so a timestamp could never exist.
+* `features_concatenator` also built a one-element list and then took min/max
+  over it -- its padding and dimension-alignment logic was a no-op.
+
+Now: the video is cut into overlapping windows by `segmentation`, each window is
+captioned, and the result is a `list[CaptionSegment]` carrying real start and
+end times in seconds. Artifacts are loaded once per process and cached.
+"""
+
+from __future__ import annotations
+
 import json
-import numpy as np
-import tensorflow as tf
-import joblib
-from tensorflow.keras.models import load_model
-from tensorflow.keras.preprocessing.text import tokenizer_from_json
+import os
+from pathlib import Path
 
-from feature_extraction import video_feature_extractor 
+os.environ.setdefault("KERAS_BACKEND", "torch")
+os.environ.setdefault("PYTORCH_ENABLE_MPS_FALLBACK", "1")
 
-MODEL_PATH = "lstm_model.keras"
-TOKENIZER_PATH = "tokenizer.json"
-SCALER_PATH = "scaler.pkl"
-SVD_PATH = "svd.pkl"
-MAX_LENGTH = 11
+import joblib  # noqa: E402
+import numpy as np  # noqa: E402
 
-def loading_and_preprocessing(X_Features):
+from feature_extraction import FEATURE_DIM, features_from_frames, get_vgg16  # noqa: E402
+from segmentation import (  # noqa: E402
+    CaptionSegment,
+    VideoReadError,
+    plan_windows,
+    probe_video,
+    read_window_frames,
+)
 
-    print("Loading trained LSTM model...")
-    model = tf.keras.models.load_model(MODEL_PATH)
-    print("LSTM model loaded successfully.")
+ARTIFACT_DIR = Path(__file__).resolve().parent.parent
+MODEL_PATH = ARTIFACT_DIR / "lstm_model.keras"
+TOKENIZER_PATH = ARTIFACT_DIR / "tokenizer.json"
+SCALER_PATH = ARTIFACT_DIR / "scaler.pkl"
+SVD_PATH = ARTIFACT_DIR / "svd.pkl"
 
-    print("Loading tokenizer...")
-    with open(TOKENIZER_PATH, "r") as f:
-        tokenizer_data = f.read()
-    tokenizer = tokenizer_from_json(tokenizer_data)
-    print("Tokenizer loaded successfully.")
+_ARTIFACTS = None
 
-    print("Loading scaler and SVD...")
-    scaler = joblib.load(SCALER_PATH)
-    svd = joblib.load(SVD_PATH)
-    print("Scaler and SVD loaded successfully.")
 
-    print("Loading raw video features...")
-    X_raw = X_Features
-    print(f"Loaded raw feature array with shape: {X_raw.shape}")
+def load_artifacts():
+    """Load model, tokenizer, SVD and scaler exactly once per process.
 
-    print("Applying SVD and scaling transformations...")
+    The original constructed VGG16 and reloaded every artifact on each call.
+    """
+    global _ARTIFACTS
+    if _ARTIFACTS is None:
+        import keras
 
-    n_samples, timesteps, n_features = X_raw.shape
-    X_flat = X_raw.reshape(-1, n_features)
-    X_reduced = svd.transform(X_flat)
-    X_reduced = X_reduced.reshape(n_samples, timesteps, -1)
+        missing = [p.name for p in (MODEL_PATH, TOKENIZER_PATH, SCALER_PATH, SVD_PATH)
+                   if not p.exists()]
+        if missing:
+            raise FileNotFoundError(
+                f"missing model artifacts: {', '.join(missing)}. "
+                "Run scripts/train.py to regenerate them."
+            )
+        tokenizer = json.loads(TOKENIZER_PATH.read_text())
+        _ARTIFACTS = {
+            "model": keras.models.load_model(MODEL_PATH, compile=False),
+            "tokenizer": tokenizer,
+            "svd": joblib.load(SVD_PATH),
+            "scaler": joblib.load(SCALER_PATH),
+            "vgg": get_vgg16(),
+            "max_length": int(tokenizer.get("max_length", 11)),
+        }
+    return _ARTIFACTS
 
-    num_videos, num_frames, feat_dim = X_reduced.shape
-    X_scaled_flat = X_reduced.reshape(-1, feat_dim)
 
-    X_scaled_flat = scaler.transform(X_scaled_flat)
-    X_reduced = X_scaled_flat.reshape(num_videos, num_frames, feat_dim)
+def generate_caption_greedy(model, video_feature: np.ndarray, tokenizer: dict,
+                            max_length: int | None = None) -> str:
+    """Greedy autoregressive decode for a single window.
 
-    return X_reduced
+    `tokenizer` is our own dict, but `word_index` is looked up by the literal
+    lowercase keys 'start' and 'end' -- the same contract the original assumed.
+    """
+    wi = tokenizer["word_index"]
+    iw = tokenizer["index_word"]
+    max_length = max_length or int(tokenizer.get("max_length", 11))
 
-def features_concatenator(spatial_features, temporal_features):
-    X_features = []
-    spatial_feat = spatial_features
-    temporal_feat = temporal_features
+    start_token = wi.get("start")
+    end_token = wi.get("end")
+    if start_token is None or end_token is None:
+        raise ValueError("tokenizer.json lacks the required 'start'/'end' tokens")
 
-    if len(temporal_feat.shape) == 1:
-        temporal_feat_expanded = np.tile(temporal_feat, (spatial_feat.shape[0], 1))
-    else:
-        temporal_feat_expanded = temporal_feat
-
-    hybrid_feat = np.concatenate([spatial_feat, temporal_feat_expanded], axis=-1)
-    X_features.append(hybrid_feat)
-
-    min_feature_dim = min([f.shape[1] for f in X_features])
-    X_fixed = [f[:, :min_feature_dim] for f in X_features]
-
-    max_time_steps = max([f.shape[0] for f in X_fixed])
-    X_padded = []
-
-    for f in X_fixed:
-        if f.shape[0] < max_time_steps:
-            pad_width = ((0, max_time_steps - f.shape[0]), (0, 0))
-            f_padded = np.pad(f, pad_width, mode='constant', constant_values=0)
-        else:
-            f_padded = f
-        X_padded.append(f_padded)
-
-    X_features = np.array(X_padded)
-    return X_features
-
-def generate_caption_greedy(model, video_feature, tokenizer, max_length=11):
-    start_token = tokenizer.word_index.get('start')
-    end_token = tokenizer.word_index.get('end')
-    inv_map = {v: k for k, v in tokenizer.word_index.items()}
-
-    caption_seq = [start_token]
-    for _ in range(max_length):
-        decoder_input_seq = np.array(caption_seq)[None, :]
-        preds = model.predict([video_feature[None, :, :], decoder_input_seq], verbose=0)
-        next_token = np.argmax(preds[0, len(caption_seq) - 1, :])
-        if next_token == end_token:
+    seq = [start_token]
+    words: list[str] = []
+    for _ in range(max_length - 1):
+        padded = np.array([seq + [0] * (max_length - 1 - len(seq))], dtype="int32")
+        preds = model.predict([video_feature[None, ...], padded], verbose=0)
+        nxt = int(np.argmax(preds[0, len(seq) - 1]))
+        if nxt == end_token or nxt == 0:
             break
-        caption_seq.append(next_token)
+        words.append(iw.get(str(nxt), "<unk>"))
+        seq.append(nxt)
+    return " ".join(words)
 
-    caption = [inv_map.get(i, "<unk>") for i in caption_seq if i not in [start_token, end_token]]
-    return " ".join(caption)
 
-def lstm_captioning(video):
-    spatial_features, temporal_features = video_feature_extractor(video)
-    X_Features = features_concatenator(spatial_features, temporal_features)
-    X_reduced = loading_and_preprocessing(X_Features)
+def caption_video(video_path: str | Path, progress=None) -> list[CaptionSegment]:
+    """Caption an entire video. Returns one CaptionSegment per window.
 
-    generated_captions_greedy = {}
+    `progress` is an optional callable(done, total) for UI feedback.
+    """
+    art = load_artifacts()
+    info = probe_video(video_path)  # raises VideoReadError on bad input
+    windows = plan_windows(info)
+    frame_cache = read_window_frames(info, windows)
 
-    for i in range(len(X_reduced)):
-        caption = generate_caption_greedy(model, X_reduced[i], tokenizer, max_length=MAX_LENGTH)
-        generated_captions_greedy[f"video_{i}"] = caption
+    segments: list[CaptionSegment] = []
+    for n, w in enumerate(windows, 1):
+        rgb = [frame_cache[i][0] for i in w.frame_indices]
+        gray = [frame_cache[i][1] for i in w.frame_indices]
 
-    return generated_captions_greedy
+        feats = features_from_frames(rgb, gray, art["vgg"])          # (T, 25120)
+        reduced = art["svd"].transform(feats)                         # (T, 1500)
+        scaled = art["scaler"].transform(reduced).astype("float32")
+
+        text = generate_caption_greedy(art["model"], scaled, art["tokenizer"],
+                                       art["max_length"])
+        segments.append(CaptionSegment(text=text, start=w.start, end=w.end))
+        if progress:
+            progress(n, len(windows))
+
+    return segments
+
+
+def lstm_captioning(video) -> list[CaptionSegment]:
+    """Backwards-compatible entry point.
+
+    Accepts a path, or a Streamlit `UploadedFile` / any file-like object with
+    `.read()` (OpenCV needs a real path, so file-likes are spooled to a temp
+    file first).
+    """
+    if hasattr(video, "read"):
+        import tempfile
+
+        suffix = Path(getattr(video, "name", "upload.mp4")).suffix or ".mp4"
+        with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
+            if hasattr(video, "seek"):
+                video.seek(0)
+            tmp.write(video.read())
+            tmp_path = tmp.name
+        try:
+            return caption_video(tmp_path)
+        finally:
+            os.unlink(tmp_path)
+    return caption_video(video)
+
+
+__all__ = [
+    "CaptionSegment",
+    "VideoReadError",
+    "caption_video",
+    "generate_caption_greedy",
+    "load_artifacts",
+    "lstm_captioning",
+]
