@@ -1,0 +1,104 @@
+{
+  "1. Interpreter and platform": {
+    "python": "3.11.15",
+    "platform": "macOS-26.4.1-arm64-arm-64bit"
+  },
+  "2. Core imports": {
+    "numpy": "2.2.6",
+    "opencv": "4.12.0",
+    "keras": "3.15.1",
+    "keras_backend": "torch",
+    "torch": "2.9.1",
+    "scikit-learn": "1.7.2",
+    "joblib": "1.5.2",
+    "streamlit": "1.51.0"
+  },
+  "3. TensorFlow is absent (it crashes on this OS)": "absent",
+  "4. Compute device": {
+    "mps": true,
+    "device": "mps"
+  },
+  "5. VGG16 loads and yields the expected feature width": {
+    "flat_dim": 25088,
+    "load_s": 0.2
+  },
+  "6. VGG16 throughput (sizes the Stage 4 extraction run)": {
+    "frames_per_sec": 51.8,
+    "est_extract_min": 1.3
+  },
+  "7. A BiLSTM + attention model builds and saves as .keras": {
+    "params": 57714,
+    "saved_kb": 273
+  },
+  "8. sklearn SVD + scaler survive a joblib round-trip": "ok",
+  "9. Semantic search works without sentence-transformers": {
+    "dim": 256,
+    "fight_vs_sit": [
+      0.23983551561832428,
+      0.023056859150528908
+    ]
+  },
+  "10. Dataset is readable; balanced 20/category sample is viable": {
+    "categories": {
+      "fall": 200,
+      "grab": 200,
+      "gun": 200,
+      "hit": 200,
+      "kick": 100,
+      "lying_down": 200,
+      "run": 200,
+      "sit": 200,
+      "sneak": 100,
+      "stand": 200,
+      "struggle": 200,
+      "throw": 100,
+      "walk": 200
+    },
+    "total_clips": 2300,
+    "frames_min": 30,
+    "frames_median": 120,
+    "frames_max": 270,
+    "unreadable_probed": 0,
+    "resolutions": [
+      "1280x720",
+      "320x240",
+      "450x360",
+      "466x360",
+      "480x360",
+      "530x360",
+      "636x360",
+      "640x356",
+      "640x360"
+    ]
+  },
+  "11. Filename -> label parsing (Stage 3 depends on this)": {
+    "sources": {
+      "UCFCRIME": 1179,
+      "YOUTUBE": 809,
+      "NTU": 301,
+      "SPHAR": 8,
+      "LIVELEAK": 3
+    },
+    "label_mismatches": 1
+  },
+  "12. Bundled test videos are readable": {
+    "MalAct_test_video.mp4": {
+      "frames": 1377,
+      "fps": 30.0,
+      "size": "1920x1080",
+      "seconds": 45.9
+    },
+    "Random_test_video1.mp4": {
+      "frames": 964,
+      "fps": 50.0,
+      "size": "3840x2160",
+      "seconds": 19.3
+    },
+    "Random_test_video2.mp4": {
+      "frames": 445,
+      "fps": 24.0,
+      "size": "960x540",
+      "seconds": 18.5
+    }
+  }
+}

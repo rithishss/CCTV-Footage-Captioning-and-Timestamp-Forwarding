@@ -1,0 +1,16 @@
+# ---------------------------------------------------------------------------
+# Training / data-prep extras. NOT installed on Streamlit Community Cloud.
+#
+#   ./.venv/bin/python -m pip install -r requirements.txt -r requirements-dev.txt
+# ---------------------------------------------------------------------------
+
+-r requirements.txt
+
+# Stage 3: vision-language captioning of sampled clip frames.
+anthropic==0.121.0
+
+# Progress bars for the Stage 3/4 batch loops.
+tqdm==4.67.1
+
+# Optional: training curves and explained-variance plots.
+matplotlib==3.11.1

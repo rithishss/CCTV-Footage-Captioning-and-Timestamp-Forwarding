@@ -1,0 +1,31 @@
+# --- Python environments ---
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# --- OS noise ---
+.DS_Store
+
+# --- Datasets (never commit; ~595 MB, fetched from Kaggle) ---
+data/
+archive/
+lol_dataset/
+
+# --- Large intermediates (regenerable from the training scripts) ---
+# features.npy is ~3.7 GB at float32 — regenerate it, do not commit it.
+*.npy
+*.npz
+!captions.json
+
+# --- Notebook / tooling scratch ---
+.ipynb_checkpoints/
+.pytest_cache/
+
+# --- NOTE ---
+# The four model artifacts are deliberately NOT ignored:
+#   lstm_model.keras, tokenizer.json, scaler.pkl, svd.pkl
+# They must be committed or Streamlit Community Cloud has nothing to load.
+# Losing them is exactly what caused this rebuild.
