@@ -1,5 +1,7 @@
 # CCTV Footage Search
 
+### ▶️ [Try the live demo](https://cctv-footage-search-rithish.streamlit.app)
+
 Search surveillance video by **describing what you're looking for**.
 
 Type *"someone falls to the ground"* and get back the moments in the footage
