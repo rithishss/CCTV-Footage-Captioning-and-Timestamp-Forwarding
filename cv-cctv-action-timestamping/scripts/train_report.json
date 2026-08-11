@@ -5,13 +5,13 @@
   "svd": {
     "components": 256,
     "explained_variance_ratio": 0.7032468914985657,
-    "fit_seconds": 3.8
+    "fit_seconds": 3.4
   },
   "tokenizer": {
     "vocab_size": 128,
-    "max_length": 11,
-    "truncated": 329,
-    "truncated_pct": 42.2,
+    "max_length": 14,
+    "truncated": 6,
+    "truncated_pct": 0.8,
     "start_id": 2,
     "end_id": 3
   },
@@ -35,13 +35,13 @@
     }
   },
   "training": {
-    "epochs_run": 30,
-    "best_epoch": 18,
-    "train_loss": 0.35659047961235046,
-    "val_loss": 0.8750846982002258,
-    "train_acc": 0.9003793001174927,
-    "val_acc": 0.7470511794090271,
-    "train_seconds": 20.3,
+    "epochs_run": 31,
+    "best_epoch": 19,
+    "train_loss": 0.32746458053588867,
+    "val_loss": 0.8344110250473022,
+    "train_acc": 0.9035937190055847,
+    "val_acc": 0.7609775066375732,
+    "train_seconds": 21.3,
     "params": 870528
   },
   "samples": [
@@ -55,7 +55,7 @@
       "clip": "hit/NTU_fight0232_hit_4.mp4",
       "category": "hit",
       "actual": "Several people hit one another in a shop indoors.",
-      "generated": "a man hits another person in a shop indoors"
+      "generated": "several people hit each other in a shop indoors"
     },
     {
       "clip": "stand/UCFCRIME_Abuse038_stand_1.mp4",
@@ -67,13 +67,13 @@
       "clip": "kick/NTU_fight0050_kick_1.mp4",
       "category": "kick",
       "actual": "Two men kick another person on a sidewalk in daylight.",
-      "generated": "a man hits another person on a sidewalk in daylight"
+      "generated": "a man hits another person in a shop in daylight"
     },
     {
       "clip": "gun/UCFCRIME_Robbery078_gun_2.mp4",
       "category": "gun",
       "actual": "A person points a gun at a man in a shop indoors.",
-      "generated": "a man points a gun in a shop indoors"
+      "generated": "a man points a gun at a person in a shop indoors"
     }
   ]
 }

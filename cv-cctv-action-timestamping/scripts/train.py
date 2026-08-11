@@ -2,7 +2,7 @@
 Stage 5 -- fit the transforms and train the captioning model.
 
 Produces all four missing artifacts:
-    svd.pkl           TruncatedSVD, 25120 -> 1500 components
+    svd.pkl           TruncatedSVD, 25120 -> 256 components
     scaler.pkl        StandardScaler fitted on the SVD output
     tokenizer.json    word_index containing literal lowercase 'start' / 'end'
     lstm_model.keras  BiLSTM encoder + attention decoder
@@ -14,9 +14,14 @@ Two deliberate choices worth knowing about:
   nothing -- most timesteps in a padded batch are padding. Every number this
   script reports is over real tokens only.
 
-* **MAX_LENGTH = 11**, as specified. Captions run up to 14 words, so
-  start + words + end exceeds 11 for a substantial share of the set; the
-  truncation rate is measured and printed rather than hidden.
+* **MAX_LENGTH = 14.** Captions run up to 14 words, so start + words + end
+  needs 14 slots to avoid truncating the tail of a caption. (It was 11
+  originally; that silently truncated 42.2% of the set.)
+
+* **N_COMPONENTS = 256.** 1500 components against 780 clips overfitted badly:
+  validation action accuracy 11.5% vs 34.0% at 256, despite *higher* explained
+  variance (93.47% vs 70.32%). The discarded variance was per-clip appearance
+  detail the model was memorising.
 
 Run:
     ./.venv/bin/python -u scripts/train.py
@@ -49,8 +54,8 @@ TOKENIZER_PATH = PROJECT_ROOT / "tokenizer.json"
 MODEL_PATH = PROJECT_ROOT / "lstm_model.keras"
 REPORT_PATH = PROJECT_ROOT / "scripts" / "train_report.json"
 
-N_COMPONENTS = 1500
-MAX_LENGTH = 11  # total tokens per caption, including 'start' and 'end'
+N_COMPONENTS = 256
+MAX_LENGTH = 14  # total tokens per caption, including 'start' and 'end'
 VAL_FRACTION = 0.2
 SEED = 42
 
