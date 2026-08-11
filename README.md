@@ -197,7 +197,7 @@ implement. For the record:
 
 ## Credits
 
-built the original pipeline and architecture.
+original pipeline and architecture.
 
 The trained artifacts from that work were never committed and are unrecoverable.
 This rebuild, by **Rithish S**, regenerated the caption set from scratch,
