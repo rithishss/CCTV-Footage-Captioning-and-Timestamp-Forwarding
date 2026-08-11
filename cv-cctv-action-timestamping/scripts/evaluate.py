@@ -53,6 +53,8 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--artifacts", type=Path, default=PROJECT_ROOT)
     ap.add_argument("--out", type=Path, default=PROJECT_ROOT / "scripts" / "eval_report.json")
+    ap.add_argument("--features", type=Path, default=Path("features.npy"))
+    ap.add_argument("--index", type=Path, default=Path("features_index.json"))
     args = ap.parse_args()
 
     import keras
@@ -65,8 +67,9 @@ def main() -> int:
     scaler = joblib.load(args.artifacts / "scaler.pkl")
 
     caps = json.loads((PROJECT_ROOT / "captions.json").read_text())["clips"]
-    clip_ids = json.loads((PROJECT_ROOT / "features_index.json").read_text())["clips"]
-    X_raw = np.load(PROJECT_ROOT / "features.npy")
+    clip_ids = json.loads((PROJECT_ROOT / args.index).read_text())["clips"]
+    feat_file = json.loads((args.artifacts / "train_report.json").read_text()).get("features_file", "features.npy") if (args.artifacts / "train_report.json").exists() else "features.npy"
+    X_raw = np.load(PROJECT_ROOT / args.features)
     categories = [caps[c]["category"] for c in clip_ids]
 
     # Reproduce the exact split used in training.

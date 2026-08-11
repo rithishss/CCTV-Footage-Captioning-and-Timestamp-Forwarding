@@ -71,6 +71,24 @@ PATIENCE = 12
 PAD, OOV, START, END = "<pad>", "<unk>", "start", "end"
 
 
+def _identity_projection():
+    """Stands in for TruncatedSVD when --no-svd is used.
+
+    Keeps the four-artifact contract intact: inference always calls
+    svd.transform(...) then scaler.transform(...), so a no-op projection means
+    lstm_captioning.py needs no special case.
+
+    This is sklearn's own FunctionTransformer rather than a custom class on
+    purpose. A hand-rolled class gets pickled as `__main__.<Name>`, which then
+    fails to unpickle from any *other* entry point -- including the Streamlit
+    app. FunctionTransformer lives in sklearn, so it loads anywhere sklearn is
+    installed.
+    """
+    from sklearn.preprocessing import FunctionTransformer
+
+    return FunctionTransformer(feature_names_out="one-to-one")
+
+
 # --------------------------------------------------------------------------- #
 # Tokenizer
 # --------------------------------------------------------------------------- #
@@ -119,16 +137,29 @@ def build_model(vocab_size: int, timesteps: int, feat_dim: int):
     video = layers.Input(shape=(timesteps, feat_dim), name="video")
     tokens = layers.Input(shape=(MAX_LENGTH - 1,), dtype="int32", name="caption")
 
-    enc = layers.Bidirectional(
-        layers.LSTM(ENC_UNITS, return_sequences=True, dropout=DROPOUT), name="encoder"
-    )(video)  # -> (T, 2*ENC_UNITS)
+    # return_state so the decoder can be *initialised* from the video, not just
+    # attend to it afterwards. Previously the decoder LSTM started from a zero
+    # state and video only reached it through Attention applied AFTER the
+    # recurrence, so video never entered the decoder's dynamics at all -- the
+    # most likely reason it could not exploit better features.
+    enc_seq, f_h, f_c, b_h, b_c = layers.Bidirectional(
+        layers.LSTM(ENC_UNITS, return_sequences=True, return_state=True, dropout=DROPOUT),
+        name="encoder",
+    )(video)  # enc_seq -> (T, 2*ENC_UNITS)
+
+    # Concatenating the forward and backward states gives exactly DEC_UNITS
+    # (= 2 * ENC_UNITS), so it drops straight into the decoder's initial state.
+    state_h = layers.Concatenate(name="state_h")([f_h, b_h])
+    state_c = layers.Concatenate(name="state_c")([f_c, b_c])
 
     emb = layers.Embedding(vocab_size, EMBED_DIM, mask_zero=False, name="embedding")(tokens)
-    dec = layers.LSTM(DEC_UNITS, return_sequences=True, dropout=DROPOUT, name="decoder")(emb)
+    dec = layers.LSTM(DEC_UNITS, return_sequences=True, dropout=DROPOUT, name="decoder")(
+        emb, initial_state=[state_h, state_c]
+    )
 
     # keras.layers.Attention requires query and value to share a last dim,
     # which is why DEC_UNITS == 2 * ENC_UNITS.
-    ctx = layers.Attention(name="attention")([dec, enc])
+    ctx = layers.Attention(name="attention")([dec, enc_seq])
     merged = layers.Concatenate(name="concat")([dec, ctx])
     merged = layers.Dropout(DROPOUT)(merged)
     out = layers.Dense(vocab_size, activation="softmax", name="output")(merged)
@@ -186,12 +217,23 @@ def main() -> int:
                     help="override the SVD component count")
     ap.add_argument("--outdir", type=Path, default=None,
                     help="write artifacts here instead of the project root (for comparisons)")
+    ap.add_argument("--features", type=Path, default=None,
+                    help="alternative features .npy (its index is <stem>_index.json)")
+    ap.add_argument("--no-svd", action="store_true",
+                    help="skip TruncatedSVD entirely; scale the raw features instead")
     args = ap.parse_args()
 
     if args.max_length:
         MAX_LENGTH = args.max_length
     if args.components:
         N_COMPONENTS = args.components
+
+    global FEATURES_PATH, INDEX_PATH
+    if args.features:
+        FEATURES_PATH = args.features
+        stem = args.features.stem
+        cand = args.features.with_name(f"{stem}_index.json")
+        INDEX_PATH = cand if cand.exists() else args.features.with_name("features_index.json")
     if args.outdir:
         args.outdir.mkdir(parents=True, exist_ok=True)
         SVD_PATH = args.outdir / "svd.pkl"
@@ -228,20 +270,33 @@ def main() -> int:
     from sklearn.preprocessing import StandardScaler
 
     flat = X_raw.reshape(-1, feat_dim)
-    print(f"\nfitting TruncatedSVD({N_COMPONENTS}) on {flat.shape} ...", flush=True)
-    t0 = time.time()
-    svd = TruncatedSVD(n_components=N_COMPONENTS, random_state=SEED, algorithm="randomized", n_iter=7)
-    reduced = svd.fit_transform(flat)
-    ev = float(svd.explained_variance_ratio_.sum())
-    print(f"  done in {time.time() - t0:.0f}s | explained variance {ev * 100:.4f}%")
-    report["svd"] = {"components": N_COMPONENTS, "explained_variance_ratio": ev,
-                     "fit_seconds": round(time.time() - t0, 1)}
+    if args.no_svd:
+        # Identity "SVD" so the artifact contract and the inference path stay
+        # unchanged: lstm_captioning always does svd.transform then
+        # scaler.transform. With a compact backbone the projection may simply
+        # not be needed, which is what --no-svd tests.
+        print(f"\nSKIPPING SVD (--no-svd): scaling raw {feat_dim}-d features", flush=True)
+        svd = _identity_projection().fit(flat[:1])
+        reduced = flat
+        n_out = feat_dim
+        report["svd"] = {"components": None, "skipped": True, "raw_dim": feat_dim}
+    else:
+        print(f"\nfitting TruncatedSVD({N_COMPONENTS}) on {flat.shape} ...", flush=True)
+        t0 = time.time()
+        svd = TruncatedSVD(n_components=N_COMPONENTS, random_state=SEED,
+                           algorithm="randomized", n_iter=7)
+        reduced = svd.fit_transform(flat)
+        ev = float(svd.explained_variance_ratio_.sum())
+        n_out = N_COMPONENTS
+        print(f"  done in {time.time() - t0:.0f}s | explained variance {ev * 100:.4f}%")
+        report["svd"] = {"components": N_COMPONENTS, "explained_variance_ratio": ev,
+                         "fit_seconds": round(time.time() - t0, 1)}
 
     scaler = StandardScaler().fit(reduced)
-    X = scaler.transform(reduced).reshape(n_clips, timesteps, N_COMPONENTS).astype("float32")
+    X = scaler.transform(reduced).reshape(n_clips, timesteps, n_out).astype("float32")
     joblib.dump(svd, SVD_PATH)
     joblib.dump(scaler, SCALER_PATH)
-    print(f"  -> {SVD_PATH.name} ({SVD_PATH.stat().st_size / 1e6:.0f} MB), {SCALER_PATH.name}")
+    print(f"  -> {SVD_PATH.name} ({SVD_PATH.stat().st_size / 1e6:.1f} MB), {SCALER_PATH.name}")
     del flat, reduced, X_raw
 
     # ---------------- tokenizer ----------------
@@ -278,7 +333,7 @@ def main() -> int:
 
     # ---------------- train ----------------
     loss_fn, acc_fn = masked_loss_and_metric()
-    model = build_model(vocab_size, timesteps, N_COMPONENTS)
+    model = build_model(vocab_size, timesteps, n_out)
     model.compile(optimizer=keras.optimizers.Adam(1e-3), loss=loss_fn, metrics=[acc_fn])
     print(f"\nmodel params: {model.count_params():,}")
 

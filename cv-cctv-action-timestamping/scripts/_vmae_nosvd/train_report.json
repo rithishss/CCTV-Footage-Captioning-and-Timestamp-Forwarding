@@ -1,0 +1,79 @@
+{
+  "n_clips": 780,
+  "timesteps": 8,
+  "raw_feature_dim": 768,
+  "svd": {
+    "components": null,
+    "skipped": true,
+    "raw_dim": 768
+  },
+  "tokenizer": {
+    "vocab_size": 128,
+    "max_length": 14,
+    "truncated": 6,
+    "truncated_pct": 0.8,
+    "start_id": 2,
+    "end_id": 3
+  },
+  "split": {
+    "train": 624,
+    "val": 156,
+    "val_per_category": {
+      "fall": 12,
+      "grab": 12,
+      "gun": 12,
+      "hit": 12,
+      "kick": 12,
+      "lying_down": 12,
+      "run": 12,
+      "sit": 12,
+      "sneak": 12,
+      "stand": 12,
+      "struggle": 12,
+      "throw": 12,
+      "walk": 12
+    }
+  },
+  "training": {
+    "epochs_run": 32,
+    "best_epoch": 20,
+    "train_loss": 0.3256286382675171,
+    "val_loss": 0.7621517777442932,
+    "train_acc": 0.9067242741584778,
+    "val_acc": 0.7779867649078369,
+    "train_seconds": 25.8,
+    "params": 1394816
+  },
+  "samples": [
+    {
+      "clip": "run/UCFCRIME_Assault014_run_1.mp4",
+      "category": "run",
+      "actual": "A person runs on a street in daylight.",
+      "generated": "a person sneaks along a parking lot in daylight"
+    },
+    {
+      "clip": "hit/NTU_fight0232_hit_4.mp4",
+      "category": "hit",
+      "actual": "Several people hit one another in a shop indoors.",
+      "generated": "several people hit each other in a shop indoors"
+    },
+    {
+      "clip": "stand/UCFCRIME_Abuse038_stand_1.mp4",
+      "category": "stand",
+      "actual": "Two people stand on a sidewalk at night.",
+      "generated": "a person runs on a sidewalk beside daylight"
+    },
+    {
+      "clip": "kick/NTU_fight0050_kick_1.mp4",
+      "category": "kick",
+      "actual": "Two men kick another person on a sidewalk in daylight.",
+      "generated": "a man hits another person on a sidewalk in daylight"
+    },
+    {
+      "clip": "gun/UCFCRIME_Robbery078_gun_2.mp4",
+      "category": "gun",
+      "actual": "A person points a gun at a man in a shop indoors.",
+      "generated": "a person falls to the ground in a store indoors"
+    }
+  ]
+}

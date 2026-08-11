@@ -53,7 +53,6 @@ OVERLAP = 0.5
 STRIDE_SECONDS = WINDOW_SECONDS * (1.0 - OVERLAP)  # 2.0 s
 FRAMES_PER_WINDOW = 16  # must match training (features are (16, 25120))
 IMG_SIZE = 224
-MOTION_SIZE = 64
 
 # Safety valve: a multi-hour upload would otherwise allocate unbounded memory.
 MAX_WINDOWS = 4000
@@ -189,18 +188,18 @@ def plan_windows(
 
 def read_window_frames(
     info: VideoInfo, windows: list[VideoWindow]
-) -> dict[int, tuple[np.ndarray, np.ndarray]]:
+) -> dict[int, np.ndarray]:
     """Decode every frame any window needs, in ONE sequential pass.
 
-    Returns {frame_index: (rgb_224, gray_64)}. Sequential decoding is far
-    cheaper than seeking per window, and with 50% overlap most frames are shared
-    by two windows, so the cache is read twice on average.
+    Returns {frame_index: rgb_224}. Sequential decoding is far cheaper than
+    seeking per window, and with 50% overlap most frames are shared by two
+    windows, so the cache is read twice on average.
     """
     needed = sorted({i for w in windows for i in w.frame_indices})
     if not needed:
         return {}
 
-    cache: dict[int, tuple[np.ndarray, np.ndarray]] = {}
+    cache: dict[int, np.ndarray] = {}
     cap = cv2.VideoCapture(info.path)
     if not cap.isOpened():
         raise VideoReadError(f"cannot open video: {info.path}")
