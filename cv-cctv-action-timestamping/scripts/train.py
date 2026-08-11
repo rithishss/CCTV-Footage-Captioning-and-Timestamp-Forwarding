@@ -71,6 +71,25 @@ PATIENCE = 12
 PAD, OOV, START, END = "<pad>", "<unk>", "start", "end"
 
 
+class _IdentityProjection:
+    """Stands in for TruncatedSVD when --no-svd is used.
+
+    Keeps the four-artifact contract intact: inference always calls
+    svd.transform(...) then scaler.transform(...), so a no-op projection means
+    lstm_captioning.py needs no special case.
+    """
+
+    def __init__(self, dim: int):
+        self.n_components = dim
+        self.explained_variance_ratio_ = np.ones(1, dtype="float32")
+
+    def transform(self, X):
+        return X
+
+    def fit_transform(self, X, y=None):
+        return X
+
+
 # --------------------------------------------------------------------------- #
 # Tokenizer
 # --------------------------------------------------------------------------- #
@@ -186,12 +205,23 @@ def main() -> int:
                     help="override the SVD component count")
     ap.add_argument("--outdir", type=Path, default=None,
                     help="write artifacts here instead of the project root (for comparisons)")
+    ap.add_argument("--features", type=Path, default=None,
+                    help="alternative features .npy (its index is <stem>_index.json)")
+    ap.add_argument("--no-svd", action="store_true",
+                    help="skip TruncatedSVD entirely; scale the raw features instead")
     args = ap.parse_args()
 
     if args.max_length:
         MAX_LENGTH = args.max_length
     if args.components:
         N_COMPONENTS = args.components
+
+    global FEATURES_PATH, INDEX_PATH
+    if args.features:
+        FEATURES_PATH = args.features
+        stem = args.features.stem
+        cand = args.features.with_name(f"{stem}_index.json")
+        INDEX_PATH = cand if cand.exists() else args.features.with_name("features_index.json")
     if args.outdir:
         args.outdir.mkdir(parents=True, exist_ok=True)
         SVD_PATH = args.outdir / "svd.pkl"
@@ -228,20 +258,33 @@ def main() -> int:
     from sklearn.preprocessing import StandardScaler
 
     flat = X_raw.reshape(-1, feat_dim)
-    print(f"\nfitting TruncatedSVD({N_COMPONENTS}) on {flat.shape} ...", flush=True)
-    t0 = time.time()
-    svd = TruncatedSVD(n_components=N_COMPONENTS, random_state=SEED, algorithm="randomized", n_iter=7)
-    reduced = svd.fit_transform(flat)
-    ev = float(svd.explained_variance_ratio_.sum())
-    print(f"  done in {time.time() - t0:.0f}s | explained variance {ev * 100:.4f}%")
-    report["svd"] = {"components": N_COMPONENTS, "explained_variance_ratio": ev,
-                     "fit_seconds": round(time.time() - t0, 1)}
+    if args.no_svd:
+        # Identity "SVD" so the artifact contract and the inference path stay
+        # unchanged: lstm_captioning always does svd.transform then
+        # scaler.transform. With a compact backbone the projection may simply
+        # not be needed, which is what --no-svd tests.
+        print(f"\nSKIPPING SVD (--no-svd): scaling raw {feat_dim}-d features", flush=True)
+        svd = _IdentityProjection(feat_dim)
+        reduced = flat
+        n_out = feat_dim
+        report["svd"] = {"components": None, "skipped": True, "raw_dim": feat_dim}
+    else:
+        print(f"\nfitting TruncatedSVD({N_COMPONENTS}) on {flat.shape} ...", flush=True)
+        t0 = time.time()
+        svd = TruncatedSVD(n_components=N_COMPONENTS, random_state=SEED,
+                           algorithm="randomized", n_iter=7)
+        reduced = svd.fit_transform(flat)
+        ev = float(svd.explained_variance_ratio_.sum())
+        n_out = N_COMPONENTS
+        print(f"  done in {time.time() - t0:.0f}s | explained variance {ev * 100:.4f}%")
+        report["svd"] = {"components": N_COMPONENTS, "explained_variance_ratio": ev,
+                         "fit_seconds": round(time.time() - t0, 1)}
 
     scaler = StandardScaler().fit(reduced)
-    X = scaler.transform(reduced).reshape(n_clips, timesteps, N_COMPONENTS).astype("float32")
+    X = scaler.transform(reduced).reshape(n_clips, timesteps, n_out).astype("float32")
     joblib.dump(svd, SVD_PATH)
     joblib.dump(scaler, SCALER_PATH)
-    print(f"  -> {SVD_PATH.name} ({SVD_PATH.stat().st_size / 1e6:.0f} MB), {SCALER_PATH.name}")
+    print(f"  -> {SVD_PATH.name} ({SVD_PATH.stat().st_size / 1e6:.1f} MB), {SCALER_PATH.name}")
     del flat, reduced, X_raw
 
     # ---------------- tokenizer ----------------
@@ -278,7 +321,7 @@ def main() -> int:
 
     # ---------------- train ----------------
     loss_fn, acc_fn = masked_loss_and_metric()
-    model = build_model(vocab_size, timesteps, N_COMPONENTS)
+    model = build_model(vocab_size, timesteps, n_out)
     model.compile(optimizer=keras.optimizers.Adam(1e-3), loss=loss_fn, metrics=[acc_fn])
     print(f"\nmodel params: {model.count_params():,}")
 
