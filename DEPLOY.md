@@ -13,8 +13,15 @@ every individual file is under GitHub's 100 MB limit (largest is
 see GitHub's "large file" *warning* for anything over 50 MB — a warning, not a
 rejection.
 
-Dependency files live at the **repository root**: `requirements.txt` and
-`packages.txt`. Streamlit Community Cloud will not find them anywhere else.
+`requirements.txt` lives at the **repository root**. Streamlit Community Cloud
+will not find it anywhere else.
+
+There is deliberately **no `packages.txt`**. It isn't needed —
+`opencv-python-headless` links `libgthread` (from glib, already present in the
+base image) rather than `libGL`. Adding one also carries a trap: Streamlit
+passes every line of `packages.txt` straight to `apt`, so `#` comment lines are
+treated as package names and the build fails with `Unable to locate package the`.
+If you ever do need one, it must be bare package names only, one per line.
 
 ---
 
@@ -76,9 +83,9 @@ The error type is the giveaway:
 | Error | Means |
 |---|---|
 | `ModuleNotFoundError: No module named 'cv2'` | the package was never installed — check where `requirements.txt` lives |
-| `ImportError: libGL.so.1: cannot open shared object file` | package installed, **system** library missing — that is what `packages.txt` is for |
+| `ImportError: libGL.so.1: cannot open shared object file` | package installed, **system** library missing — would need a `packages.txt` |
 
-`requirements.txt` and `packages.txt` now both sit at the repo root.
+`requirements.txt` now sits at the repo root.
 `cv-cctv-action-timestamping/requirements.txt` remains as a one-line
 `-r ../requirements.txt` pointer so local installs from inside the project
 directory still work.
@@ -94,10 +101,12 @@ ignores it, replace the two torch lines with a plain `torch==2.9.1` — the buil
 gets much larger but will resolve.
 
 **`ImportError: libGL.so.1: cannot open shared object file`**
-Something pulled in `opencv-python` instead of `opencv-python-headless`, or the
-apt step didn't run. `packages.txt` at the repo root installs `libgl1` and
-`libglib2.0-0` to cover both cases. Check nothing added non-headless OpenCV
-transitively; the headless build is deliberate.
+Something pulled in `opencv-python` instead of `opencv-python-headless` — check
+nothing added it transitively, the headless build is deliberate. Only if that is
+genuinely the case would you add a `packages.txt` at the repo root containing
+exactly two lines, `libgl1` and `libglib2.0-0`, and nothing else: Streamlit feeds
+every line to `apt`, so a comment line becomes a package name and fails the
+build.
 
 **Build succeeds, app crashes with `FileNotFoundError` naming an artifact**
 One of `lstm_model.keras` / `tokenizer.json` / `scaler.pkl` / `svd.pkl` didn't
